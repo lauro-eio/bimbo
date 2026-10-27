@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B2027_Club_Configuration_Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_name",
+    "project_code",
+    "commercial_name",
+    "cefr_level",
+    "role_id",
+    "framework",
+    "budgets",
+    "v1"
+  ],
+  "properties": {
+    "registry_name": { "type": "string", "const": "B2027_Club_Configuration" },
+    "project_code": { "type": "string", "const": "B2027" },
+    "commercial_name": {
+      "type": "string",
+      "const": "Bimbo · 100",
+      "description": "UI program title. Not a class count, path, or project_code."
+    },
+    "cefr_level": { "type": "string", "const": "B2" },
+    "role_id": { "type": "string", "const": "CLUB_SK_PROD_SPEAKING" },
+    "framework": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "ordered_stages"],
+      "properties": {
+        "name": { "type": "string", "const": "CLUB-SK-PROD" },
+        "ordered_stages": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "enum": ["L-IN", "OVW", "TL", "Q3", "ART", "FP", "REF", "FBDC"]
+          }
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "article_word_min",
+        "article_word_max",
+        "tl_item_min",
+        "tl_item_max",
+        "plan_sheet_question_min",
+        "q3_count",
+        "reflection_seconds_min",
+        "reflection_seconds_max"
+      ],
+      "properties": {
+        "article_word_min": { "type": "integer", "minimum": 1 },
+        "article_word_max": { "type": "integer", "minimum": 1 },
+        "tl_item_min": { "type": "integer", "minimum": 1 },
+        "tl_item_max": { "type": "integer", "minimum": 1 },
+        "plan_sheet_question_min": { "type": "integer", "minimum": 6 },
+        "q3_count": { "type": "integer", "const": 3 },
+        "reflection_seconds_min": { "type": "integer", "minimum": 1 },
+        "reflection_seconds_max": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "v1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "article_provenance",
+        "situational_brief",
+        "ovw_mode",
+        "render_target",
+        "unit_title"
+      ],
+      "properties": {
+        "article_provenance": {
+          "type": "string",
+          "const": "generate_from_topic"
+        },
+        "situational_brief": {
+          "type": "string",
+          "const": "auto_from_topic"
+        },
+        "ovw_mode": { "type": "string", "const": "template" },
+        "render_target": { "type": "string", "const": "local_html" },
+        "unit_title": { "type": "string", "const": "topic" }
+      }
+    }
+  }
+}

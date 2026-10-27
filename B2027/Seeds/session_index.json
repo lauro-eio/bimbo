@@ -1,0 +1,806 @@
+{
+  "registry_name": "B2027_Session_Index",
+  "source": "source/bimbo-2027-program.md",
+  "sessions": [
+    {
+      "session_id": "c001",
+      "week": 1,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Hedging Commodity Price Volatility: Managing financial risk around wheat, flour, sugar, and edible oils.",
+      "unit_title": "Hedging Commodity Price Volatility: Managing financial risk around wheat, flour, sugar, and edible oils."
+    },
+    {
+      "session_id": "c002",
+      "week": 1,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Capital Expenditure (CapEx) Proposals for Automation: Pitching ROI for new high-speed packaging machinery.",
+      "unit_title": "Capital Expenditure (CapEx) Proposals for Automation: Pitching ROI for new high-speed packaging machinery."
+    },
+    {
+      "session_id": "c003",
+      "week": 2,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "ERP System Modernization (SAP Integration): Upgrading enterprise resource planning across legacy baking plants.",
+      "unit_title": "ERP System Modernization (SAP Integration): Upgrading enterprise resource planning across legacy baking plants."
+    },
+    {
+      "session_id": "c004",
+      "week": 2,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.",
+      "unit_title": "IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur."
+    },
+    {
+      "session_id": "c005",
+      "week": 3,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Optimizing Direct Store Delivery (DSD) Efficiency: Managing daily fresh deliveries to thousands of retail stores.",
+      "unit_title": "Optimizing Direct Store Delivery (DSD) Efficiency: Managing daily fresh deliveries to thousands of retail stores."
+    },
+    {
+      "session_id": "c006",
+      "week": 3,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Ingredient Shortage Emergency Management: Finding alternative suppliers during sudden ingredient deficits.",
+      "unit_title": "Ingredient Shortage Emergency Management: Finding alternative suppliers during sudden ingredient deficits."
+    },
+    {
+      "session_id": "c007",
+      "week": 4,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "AI as a Creative Partner: Art, writing, and music made with artificial intelligence.",
+      "unit_title": "AI as a Creative Partner: Art, writing, and music made with artificial intelligence."
+    },
+    {
+      "session_id": "c008",
+      "week": 4,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "Viral Recipes - Hype vs. Taste: Social media food trends versus practical cooking reality.",
+      "unit_title": "Viral Recipes - Hype vs. Taste: Social media food trends versus practical cooking reality."
+    },
+    {
+      "session_id": "c009",
+      "week": 5,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "High-Turnover Mitigation on High-Speed Baking Lines: Addressing early drop-offs among packaging and dough-mixing operators.",
+      "unit_title": "High-Turnover Mitigation on High-Speed Baking Lines: Addressing early drop-offs among packaging and dough-mixing operators."
+    },
+    {
+      "session_id": "c010",
+      "week": 5,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Managing Shift-Work Fatigue: Developing fair rotation schedules for 24/7 continuous industrial facilities.",
+      "unit_title": "Managing Shift-Work Fatigue: Developing fair rotation schedules for 24/7 continuous industrial facilities."
+    },
+    {
+      "session_id": "c011",
+      "week": 6,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Brand Positioning for Health-Conscious Consumers: Marketing keto, low-carb, and organic lines to wellness-focused demographics.",
+      "unit_title": "Brand Positioning for Health-Conscious Consumers: Marketing keto, low-carb, and organic lines to wellness-focused demographics."
+    },
+    {
+      "session_id": "c012",
+      "week": 6,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Managing Multi-Brand Portfolios: Differentiating overlapping brands within a portfolio without cannibalizing sales.",
+      "unit_title": "Managing Multi-Brand Portfolios: Differentiating overlapping brands within a portfolio without cannibalizing sales."
+    },
+    {
+      "session_id": "c013",
+      "week": 7,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "HACCP & Food Safety Standard Compliance: Maintaining strict hygiene protocols across multi-line bakeries.",
+      "unit_title": "HACCP & Food Safety Standard Compliance: Maintaining strict hygiene protocols across multi-line bakeries."
+    },
+    {
+      "session_id": "c014",
+      "week": 7,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Reducing Stale Bread Returns from Retailers: Adjusting delivery frequencies and order sizes to lower waste.",
+      "unit_title": "Reducing Stale Bread Returns from Retailers: Adjusting delivery frequencies and order sizes to lower waste."
+    },
+    {
+      "session_id": "c015",
+      "week": 8,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "Cross-Functional Alignment for Product Launches: Coordinating R&D, Marketing, and Operations for new brand drops.",
+      "unit_title": "Cross-Functional Alignment for Product Launches: Coordinating R&D, Marketing, and Operations for new brand drops."
+    },
+    {
+      "session_id": "c016",
+      "week": 8,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Leading Organizational Change in Automation Upgrades: Managing employee anxiety surrounding robotic line installations.",
+      "unit_title": "Leading Organizational Change in Automation Upgrades: Managing employee anxiety surrounding robotic line installations."
+    },
+    {
+      "session_id": "c017",
+      "week": 9,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Managing Shrinkage, Waste, and Unsold Bread (\"Stales\"): Financial modeling to minimize expired return losses.",
+      "unit_title": "Managing Shrinkage, Waste, and Unsold Bread (\"Stales\"): Financial modeling to minimize expired return losses."
+    },
+    {
+      "session_id": "c018",
+      "week": 9,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Cost-Benefit Analysis of Renewable Energy: Calculating paybacks for solar panel installations on large plant roofs.",
+      "unit_title": "Cost-Benefit Analysis of Renewable Energy: Calculating paybacks for solar panel installations on large plant roofs."
+    },
+    {
+      "session_id": "c019",
+      "week": 10,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "Cybersecurity for Connected Smart Factories: Protecting operational technology (OT) from ransomware attacks.",
+      "unit_title": "Cybersecurity for Connected Smart Factories: Protecting operational technology (OT) from ransomware attacks."
+    },
+    {
+      "session_id": "c020",
+      "week": 10,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "AI-Driven Route Optimization for DSD Delivery: Implementing smart navigation to reduce fuel usage and route duration.",
+      "unit_title": "AI-Driven Route Optimization for DSD Delivery: Implementing smart navigation to reduce fuel usage and route duration."
+    },
+    {
+      "session_id": "c021",
+      "week": 11,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Cold Chain Logistics for Frozen Dough Lines: Ensuring unbroken temperature control from plant to in-store bakeries.",
+      "unit_title": "Cold Chain Logistics for Frozen Dough Lines: Ensuring unbroken temperature control from plant to in-store bakeries."
+    },
+    {
+      "session_id": "c022",
+      "week": 11,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Oven Bottleneck Elimination: Streamlining proofing and baking times to increase hourly loaf throughput.",
+      "unit_title": "Oven Bottleneck Elimination: Streamlining proofing and baking times to increase hourly loaf throughput."
+    },
+    {
+      "session_id": "c023",
+      "week": 12,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "The Golden Age of Binge-Watching: Evolving entertainment habits & media consumption patterns.",
+      "unit_title": "The Golden Age of Binge-Watching: Evolving entertainment habits & media consumption patterns."
+    },
+    {
+      "session_id": "c024",
+      "week": 12,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "The Ideal City - Urban Life in the 21st Century: Modern infrastructure, public transit, & community planning.",
+      "unit_title": "The Ideal City - Urban Life in the 21st Century: Modern infrastructure, public transit, & community planning."
+    },
+    {
+      "session_id": "c025",
+      "week": 13,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "Workplace Safety & Injury Prevention Communication: Promoting safety protocols around high-temp ovens and heavy machinery.",
+      "unit_title": "Workplace Safety & Injury Prevention Communication: Promoting safety protocols around high-temp ovens and heavy machinery."
+    },
+    {
+      "session_id": "c026",
+      "week": 13,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Union Bargaining & Contract Negotiations: Navigating collective bargaining agreements with plant labor unions.",
+      "unit_title": "Union Bargaining & Contract Negotiations: Navigating collective bargaining agreements with plant labor unions."
+    },
+    {
+      "session_id": "c027",
+      "week": 14,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Trade Marketing & In-Store Merchandising: Negotiating prime end-cap displays, eye-level shelf placement, and point-of-sale signage.",
+      "unit_title": "Trade Marketing & In-Store Merchandising: Negotiating prime end-cap displays, eye-level shelf placement, and point-of-sale signage."
+    },
+    {
+      "session_id": "c028",
+      "week": 14,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Clean Label Rebranding Campaigns: Communicating the removal of artificial preservatives and additives.",
+      "unit_title": "Clean Label Rebranding Campaigns: Communicating the removal of artificial preservatives and additives."
+    },
+    {
+      "session_id": "c029",
+      "week": 15,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Fleet Transition to Alternative Fuels: Managing the operational transition to electric and compressed natural gas trucks.",
+      "unit_title": "Fleet Transition to Alternative Fuels: Managing the operational transition to electric and compressed natural gas trucks."
+    },
+    {
+      "session_id": "c030",
+      "week": 15,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Preventive Maintenance for Continuous Dough Mixers: Scheduling downtime to clean and service equipment without delaying orders.",
+      "unit_title": "Preventive Maintenance for Continuous Dough Mixers: Scheduling downtime to clean and service equipment without delaying orders."
+    },
+    {
+      "session_id": "c031",
+      "week": 16,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "Cascading Sustainability Vision down to Plant Level: Translating high-level corporate green goals into daily plant habits.",
+      "unit_title": "Cascading Sustainability Vision down to Plant Level: Translating high-level corporate green goals into daily plant habits."
+    },
+    {
+      "session_id": "c032",
+      "week": 16,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Crisis Leadership During Media-Exposed Incidents: Managing external and internal communications during supply disruptions.",
+      "unit_title": "Crisis Leadership During Media-Exposed Incidents: Managing external and internal communications during supply disruptions."
+    },
+    {
+      "session_id": "c033",
+      "week": 17,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Fleet Fuel Cost Budgeting: Managing diesel and electric charge costs across thousands of delivery vans.",
+      "unit_title": "Fleet Fuel Cost Budgeting: Managing diesel and electric charge costs across thousands of delivery vans."
+    },
+    {
+      "session_id": "c034",
+      "week": 17,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Foreign Exchange (FX) Exposure in Global Ingredient Sourcing: Mitigating currency risk on imported commodities.",
+      "unit_title": "Foreign Exchange (FX) Exposure in Global Ingredient Sourcing: Mitigating currency risk on imported commodities."
+    },
+    {
+      "session_id": "c035",
+      "week": 18,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "Cloud Migration for Global Supply Chain Data: Shifting regional logistics data to centralized cloud storage.",
+      "unit_title": "Cloud Migration for Global Supply Chain Data: Shifting regional logistics data to centralized cloud storage."
+    },
+    {
+      "session_id": "c036",
+      "week": 18,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "Demand Forecasting Algorithms for Fresh Bread: Using machine learning to predict daily retail demand and reduce stales.",
+      "unit_title": "Demand Forecasting Algorithms for Fresh Bread: Using machine learning to predict daily retail demand and reduce stales."
+    },
+    {
+      "session_id": "c037",
+      "week": 19,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Quality Control Consistency Across Multiple Plants: Ensuring product consistency regardless of production facility location.",
+      "unit_title": "Quality Control Consistency Across Multiple Plants: Ensuring product consistency regardless of production facility location."
+    },
+    {
+      "session_id": "c038",
+      "week": 19,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Warehouse Space Optimization for Perishable Goods: Implementing First-In, First-Out (FIFO) systems for short-lived items.",
+      "unit_title": "Warehouse Space Optimization for Perishable Goods: Implementing First-In, First-Out (FIFO) systems for short-lived items."
+    },
+    {
+      "session_id": "c039",
+      "week": 20,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "The Art of Conversation in a Digital Age: Balancing small talk, deep connections, and active listening.",
+      "unit_title": "The Art of Conversation in a Digital Age: Balancing small talk, deep connections, and active listening."
+    },
+    {
+      "session_id": "c040",
+      "week": 20,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "The High-Fiber & Gut Health Craze: Contemporary wellness trends, nutrition shifts, and dietary science.",
+      "unit_title": "The High-Fiber & Gut Health Craze: Contemporary wellness trends, nutrition shifts, and dietary science."
+    },
+    {
+      "session_id": "c041",
+      "week": 21,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "Upskilling Frontline Staff for Automated Machinery: Transitioning traditional operators to robotic pan-handling tools.",
+      "unit_title": "Upskilling Frontline Staff for Automated Machinery: Transitioning traditional operators to robotic pan-handling tools."
+    },
+    {
+      "session_id": "c042",
+      "week": 21,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Onboarding Direct Store Delivery (DSD) Drivers: Streamlining training for route sales representatives managing retail accounts.",
+      "unit_title": "Onboarding Direct Store Delivery (DSD) Drivers: Streamlining training for route sales representatives managing retail accounts."
+    },
+    {
+      "session_id": "c043",
+      "week": 22,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Seasonal & Holiday Campaign Execution: Driving volume during peak demand periods like back-to-school and holidays.",
+      "unit_title": "Seasonal & Holiday Campaign Execution: Driving volume during peak demand periods like back-to-school and holidays."
+    },
+    {
+      "session_id": "c044",
+      "week": 22,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Price-Pack Architecture Strategy: Designing smaller sizes for single-person households versus family-sized bulk packs.",
+      "unit_title": "Price-Pack Architecture Strategy: Designing smaller sizes for single-person households versus family-sized bulk packs."
+    },
+    {
+      "session_id": "c045",
+      "week": 23,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Implementing Lean / 5S on Packaging Lines: Eliminating wasted movement and clutter on high-speed wrapping floors.",
+      "unit_title": "Implementing Lean / 5S on Packaging Lines: Eliminating wasted movement and clutter on high-speed wrapping floors."
+    },
+    {
+      "session_id": "c046",
+      "week": 23,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Strategic Supplier Relationship Management (SRM): Building strong partnerships with core plastic film and corrugated box vendors.",
+      "unit_title": "Strategic Supplier Relationship Management (SRM): Building strong partnerships with core plastic film and corrugated box vendors."
+    },
+    {
+      "session_id": "c047",
+      "week": 24,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "Integrating Corporate Culture Across Acquired Brands: Unifying company values after purchasing local operating units.",
+      "unit_title": "Integrating Corporate Culture Across Acquired Brands: Unifying company values after purchasing local operating units."
+    },
+    {
+      "session_id": "c048",
+      "week": 24,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Strategic Decision-Making for Healthy Product Lines: Evaluating strategic pivots toward lower-carb or functional foods.",
+      "unit_title": "Strategic Decision-Making for Healthy Product Lines: Evaluating strategic pivots toward lower-carb or functional foods."
+    },
+    {
+      "session_id": "c049",
+      "week": 25,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Margin Protection in High Inflationary Environments: Adjusting wholesale pricing while maintaining market share.",
+      "unit_title": "Margin Protection in High Inflationary Environments: Adjusting wholesale pricing while maintaining market share."
+    },
+    {
+      "session_id": "c050",
+      "week": 25,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Budgeting Corporate Sustainability Goals: Funding net-zero carbon initiatives without eroding operating margins.",
+      "unit_title": "Budgeting Corporate Sustainability Goals: Funding net-zero carbon initiatives without eroding operating margins."
+    },
+    {
+      "session_id": "c051",
+      "week": 26,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "Digitizing Quality Assurance Logs: Replacing paper-based food safety checklists with real-time tablet interfaces.",
+      "unit_title": "Digitizing Quality Assurance Logs: Replacing paper-based food safety checklists with real-time tablet interfaces."
+    },
+    {
+      "session_id": "c052",
+      "week": 26,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "Mobile App Optimization for Route Drivers: Enhancing hand-held devices used by DSD drivers for inventory and invoicing.",
+      "unit_title": "Mobile App Optimization for Route Drivers: Enhancing hand-held devices used by DSD drivers for inventory and invoicing."
+    },
+    {
+      "session_id": "c053",
+      "week": 27,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Cross-Docking Efficiency at Local Depots: Speeding up the transfer of products from large trucks to DSD vans.",
+      "unit_title": "Cross-Docking Efficiency at Local Depots: Speeding up the transfer of products from large trucks to DSD vans."
+    },
+    {
+      "session_id": "c054",
+      "week": 27,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Managing Product Recalls Efficiently: Executing fast, compliant lot-tracing and retrieval protocols.",
+      "unit_title": "Managing Product Recalls Efficiently: Executing fast, compliant lot-tracing and retrieval protocols."
+    },
+    {
+      "session_id": "c055",
+      "week": 28,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "The Attention Economy: Managing screen time, notification overload, and deep focus.",
+      "unit_title": "The Attention Economy: Managing screen time, notification overload, and deep focus."
+    },
+    {
+      "session_id": "c056",
+      "week": 28,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "Should Voting Be Mandatory?: Examining civic duty, personal rights, and democratic engagement.",
+      "unit_title": "Should Voting Be Mandatory?: Examining civic duty, personal rights, and democratic engagement."
+    },
+    {
+      "session_id": "c057",
+      "week": 29,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "Diversity, Equity & Inclusion (DEI) on the Factory Floor: Fostering inclusive communication across multi-lingual production shifts.",
+      "unit_title": "Diversity, Equity & Inclusion (DEI) on the Factory Floor: Fostering inclusive communication across multi-lingual production shifts."
+    },
+    {
+      "session_id": "c058",
+      "week": 29,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Leadership Development for Plant Supervisors: Moving high-performing line workers into supervisory roles.",
+      "unit_title": "Leadership Development for Plant Supervisors: Moving high-performing line workers into supervisory roles."
+    },
+    {
+      "session_id": "c059",
+      "week": 30,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Navigating Front-of-Pack Warning Labels: Adapting packaging designs to comply with strict regional nutritional labeling laws.",
+      "unit_title": "Navigating Front-of-Pack Warning Labels: Adapting packaging designs to comply with strict regional nutritional labeling laws."
+    },
+    {
+      "session_id": "c060",
+      "week": 30,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Co-Branding & Sponsorship Deals: Partnering with sports teams, entertainment franchises, or complementary brands.",
+      "unit_title": "Co-Branding & Sponsorship Deals: Partnering with sports teams, entertainment franchises, or complementary brands."
+    },
+    {
+      "session_id": "c061",
+      "week": 31,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Water Usage Reduction in Facility Cleaning Cycles: Cutting water consumption during equipment sanitation runs.",
+      "unit_title": "Water Usage Reduction in Facility Cleaning Cycles: Cutting water consumption during equipment sanitation runs."
+    },
+    {
+      "session_id": "c062",
+      "week": 31,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Balancing Local Sourcing with Scale Efficiency: Sourcing regional ingredients while maintaining central cost controls.",
+      "unit_title": "Balancing Local Sourcing with Scale Efficiency: Sourcing regional ingredients while maintaining central cost controls."
+    },
+    {
+      "session_id": "c063",
+      "week": 32,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "Presenting Operational Performance to Executive Boards: Communicating facility KPIs clearly to senior leadership.",
+      "unit_title": "Presenting Operational Performance to Executive Boards: Communicating facility KPIs clearly to senior leadership."
+    },
+    {
+      "session_id": "c064",
+      "week": 32,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Resolving Corporate vs. Plant Strategy Disputes: Balancing corporate standardization requirements with local plant flexibility.",
+      "unit_title": "Resolving Corporate vs. Plant Strategy Disputes: Balancing corporate standardization requirements with local plant flexibility."
+    },
+    {
+      "session_id": "c065",
+      "week": 33,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "M&A Valuation for Regional Bakery Brands: Conducting financial due diligence on artisanal or specialty acquisition targets.",
+      "unit_title": "M&A Valuation for Regional Bakery Brands: Conducting financial due diligence on artisanal or specialty acquisition targets."
+    },
+    {
+      "session_id": "c066",
+      "week": 33,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Working Capital Optimization in High-Velocity Inventory: Managing cash conversion cycles for short-shelf-life goods.",
+      "unit_title": "Working Capital Optimization in High-Velocity Inventory: Managing cash conversion cycles for short-shelf-life goods."
+    },
+    {
+      "session_id": "c067",
+      "week": 34,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "24/7 IT Helpdesk Support for Plant Operations: Ensuring zero downtime for round-the-clock production systems.",
+      "unit_title": "24/7 IT Helpdesk Support for Plant Operations: Ensuring zero downtime for round-the-clock production systems."
+    },
+    {
+      "session_id": "c068",
+      "week": 34,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "Data Privacy Compliance (GDPR/CCPA) for Brand Loyalty Apps: Protecting consumer data on brand promotion platforms.",
+      "unit_title": "Data Privacy Compliance (GDPR/CCPA) for Brand Loyalty Apps: Protecting consumer data on brand promotion platforms."
+    },
+    {
+      "session_id": "c069",
+      "week": 35,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Third-Party Logistics (3PL) Oversight: Holding external freight providers accountable to strict delivery windows.",
+      "unit_title": "Third-Party Logistics (3PL) Oversight: Holding external freight providers accountable to strict delivery windows."
+    },
+    {
+      "session_id": "c070",
+      "week": 35,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Transitioning to 100% Recyclable Packaging: Overcoming technical challenges of eco-friendly packaging materials.",
+      "unit_title": "Transitioning to 100% Recyclable Packaging: Overcoming technical challenges of eco-friendly packaging materials."
+    },
+    {
+      "session_id": "c071",
+      "week": 36,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "Reboots, Remakes, and Sequels: Balancing original creativity versus nostalgia in modern cinema.",
+      "unit_title": "Reboots, Remakes, and Sequels: Balancing original creativity versus nostalgia in modern cinema."
+    },
+    {
+      "session_id": "c072",
+      "week": 36,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "The Human Touch in an Automated World: Identifying roles that uniquely require human empathy vs. machine logic.",
+      "unit_title": "The Human Touch in an Automated World: Identifying roles that uniquely require human empathy vs. machine logic."
+    },
+    {
+      "session_id": "c073",
+      "week": 37,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "Burnout Management During Holiday Surges: Supporting staff during peak baking periods like Thanksgiving and Christmas.",
+      "unit_title": "Burnout Management During Holiday Surges: Supporting staff during peak baking periods like Thanksgiving and Christmas."
+    },
+    {
+      "session_id": "c074",
+      "week": 37,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Bridge-Building Between Plant & Corporate HQ: Closing the cultural gap between corporate offices and manufacturing facilities.",
+      "unit_title": "Bridge-Building Between Plant & Corporate HQ: Closing the cultural gap between corporate offices and manufacturing facilities."
+    },
+    {
+      "session_id": "c075",
+      "week": 38,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Competing Against Private-Label Store Brands: Highlighting premium brand value when supermarket store brands offer lower prices.",
+      "unit_title": "Competing Against Private-Label Store Brands: Highlighting premium brand value when supermarket store brands offer lower prices."
+    },
+    {
+      "session_id": "c076",
+      "week": 38,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Digital Shopper Marketing & Retailer Media Networks: Running targeted promotions through grocery app loyalty programs.",
+      "unit_title": "Digital Shopper Marketing & Retailer Media Networks: Running targeted promotions through grocery app loyalty programs."
+    },
+    {
+      "session_id": "c077",
+      "week": 39,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Capacity Planning for New Product Rollouts: Adjusting existing lines to launch new specialty or dietary product lines.",
+      "unit_title": "Capacity Planning for New Product Rollouts: Adjusting existing lines to launch new specialty or dietary product lines."
+    },
+    {
+      "session_id": "c078",
+      "week": 39,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Severe Weather Contingency Planning: Keeping distribution open during blizzards, hurricanes, or floods.",
+      "unit_title": "Severe Weather Contingency Planning: Keeping distribution open during blizzards, hurricanes, or floods."
+    },
+    {
+      "session_id": "c079",
+      "week": 40,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "Post-Merger Integration of Logistics Networks: Combining overlapping delivery routes after acquiring a competitor.",
+      "unit_title": "Post-Merger Integration of Logistics Networks: Combining overlapping delivery routes after acquiring a competitor."
+    },
+    {
+      "session_id": "c080",
+      "week": 40,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Fostering an Innovation Mindset in Traditional Manufacturing: Encouraging plant teams to suggest process improvements.",
+      "unit_title": "Fostering an Innovation Mindset in Traditional Manufacturing: Encouraging plant teams to suggest process improvements."
+    },
+    {
+      "session_id": "c081",
+      "week": 41,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Internal Auditing for Plant Safety & Compliance Costs: Evaluating financial compliance across regional operating units.",
+      "unit_title": "Internal Auditing for Plant Safety & Compliance Costs: Evaluating financial compliance across regional operating units."
+    },
+    {
+      "session_id": "c082",
+      "week": 41,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "Cost Allocation for Centralized R&D: Distributing new bread formulation costs across regional plant budgets.",
+      "unit_title": "Cost Allocation for Centralized R&D: Distributing new bread formulation costs across regional plant budgets."
+    },
+    {
+      "session_id": "c083",
+      "week": 42,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "Warehouse Management System (WMS) Upgrades: Modernizing inventory tracking in automated distribution hubs.",
+      "unit_title": "Warehouse Management System (WMS) Upgrades: Modernizing inventory tracking in automated distribution hubs."
+    },
+    {
+      "session_id": "c084",
+      "week": 42,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "IT Disaster Recovery for Power Outages: Planning data backups and continuous systems during severe plant outages.",
+      "unit_title": "IT Disaster Recovery for Power Outages: Planning data backups and continuous systems during severe plant outages."
+    },
+    {
+      "session_id": "c085",
+      "week": 43,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "Optimizing Direct Store Delivery (DSD) Efficiency (Deep-Dive Case Study).",
+      "unit_title": "Optimizing Direct Store Delivery (DSD) Efficiency (Deep-Dive Case Study)."
+    },
+    {
+      "session_id": "c086",
+      "week": 43,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Ingredient Shortage Emergency Management (Advanced Strategy Workshop).",
+      "unit_title": "Ingredient Shortage Emergency Management (Advanced Strategy Workshop)."
+    },
+    {
+      "session_id": "c087",
+      "week": 44,
+      "slot": 1,
+      "domain": "Lifestyle",
+      "topic": "Generalists vs. Specialists: Evaluating the benefits of broad knowledge versus single-field mastery.",
+      "unit_title": "Generalists vs. Specialists: Evaluating the benefits of broad knowledge versus single-field mastery."
+    },
+    {
+      "session_id": "c088",
+      "week": 44,
+      "slot": 2,
+      "domain": "Lifestyle",
+      "topic": "Mocktails and Mindful Drinking: The rise of non-alcoholic beverages and shifting social drinking habits.",
+      "unit_title": "Mocktails and Mindful Drinking: The rise of non-alcoholic beverages and shifting social drinking habits."
+    },
+    {
+      "session_id": "c089",
+      "week": 45,
+      "slot": 1,
+      "domain": "Human Resources",
+      "topic": "Employee Wellness Programs for Physical Labor Roles: Reducing repetitive strain injuries through ergonomics and health programs.",
+      "unit_title": "Employee Wellness Programs for Physical Labor Roles: Reducing repetitive strain injuries through ergonomics and health programs."
+    },
+    {
+      "session_id": "c090",
+      "week": 45,
+      "slot": 2,
+      "domain": "Human Resources",
+      "topic": "Exit Interview Analysis in High-Attrition Facilities: Uncovering root causes behind high 90-day turnover rates.",
+      "unit_title": "Exit Interview Analysis in High-Attrition Facilities: Uncovering root causes behind high 90-day turnover rates."
+    },
+    {
+      "session_id": "c091",
+      "week": 46,
+      "slot": 1,
+      "domain": "Marketing",
+      "topic": "Sustainable Packaging Communication: Leveraging 100% recyclable packaging as core marketing differentiators.",
+      "unit_title": "Sustainable Packaging Communication: Leveraging 100% recyclable packaging as core marketing differentiators."
+    },
+    {
+      "session_id": "c092",
+      "week": 46,
+      "slot": 2,
+      "domain": "Marketing",
+      "topic": "Multicultural & Regional Flavor Adaptation: Tailoring product lines, flavors, and ad messaging to diverse local preferences.",
+      "unit_title": "Multicultural & Regional Flavor Adaptation: Tailoring product lines, flavors, and ad messaging to diverse local preferences."
+    },
+    {
+      "session_id": "c093",
+      "week": 47,
+      "slot": 1,
+      "domain": "Supply Chain",
+      "topic": "HACCP & Food Safety Standard Compliance (Audit Preparedness Simulation).",
+      "unit_title": "HACCP & Food Safety Standard Compliance (Audit Preparedness Simulation)."
+    },
+    {
+      "session_id": "c094",
+      "week": 47,
+      "slot": 2,
+      "domain": "Supply Chain",
+      "topic": "Reducing Stale Bread Returns from Retailers (Continuous Improvement Review).",
+      "unit_title": "Reducing Stale Bread Returns from Retailers (Continuous Improvement Review)."
+    },
+    {
+      "session_id": "c095",
+      "week": 48,
+      "slot": 1,
+      "domain": "Management",
+      "topic": "High-Stakes Negotiations with Retail Supermarket Buyers: Standing firm on price adjustments during contract renewals.",
+      "unit_title": "High-Stakes Negotiations with Retail Supermarket Buyers: Standing firm on price adjustments during contract renewals."
+    },
+    {
+      "session_id": "c096",
+      "week": 48,
+      "slot": 2,
+      "domain": "Management",
+      "topic": "Delegation Strategies for Overburdened Plant Managers: Empowering shift leaders to make real-time decisions.",
+      "unit_title": "Delegation Strategies for Overburdened Plant Managers: Empowering shift leaders to make real-time decisions."
+    },
+    {
+      "session_id": "c097",
+      "week": 49,
+      "slot": 1,
+      "domain": "Finance",
+      "topic": "Pricing Strategies for Premium vs. Value Lines: Setting price elasticities for organic/gluten-free vs. core bread brands.",
+      "unit_title": "Pricing Strategies for Premium vs. Value Lines: Setting price elasticities for organic/gluten-free vs. core bread brands."
+    },
+    {
+      "session_id": "c098",
+      "week": 49,
+      "slot": 2,
+      "domain": "Finance",
+      "topic": "ESG Metrics Reporting for Investor Relations: Communicating carbon footprint and waste reduction data to stakeholders.",
+      "unit_title": "ESG Metrics Reporting for Investor Relations: Communicating carbon footprint and waste reduction data to stakeholders."
+    },
+    {
+      "session_id": "c099",
+      "week": 50,
+      "slot": 1,
+      "domain": "IT",
+      "topic": "Hardware Standardization Across Acquired Facilities: Replacing legacy tech in newly bought regional operations.",
+      "unit_title": "Hardware Standardization Across Acquired Facilities: Replacing legacy tech in newly bought regional operations."
+    },
+    {
+      "session_id": "c100",
+      "week": 50,
+      "slot": 2,
+      "domain": "IT",
+      "topic": "Automated RFID Tracking for Baking Trays and Pallets: Reducing asset loss across supermarket supply chains.",
+      "unit_title": "Automated RFID Tracking for Baking Trays and Pallets: Reducing asset loss across supermarket supply chains."
+    }
+  ]
+}

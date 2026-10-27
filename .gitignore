@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+B2027/compiled/
+B2027/content/
+B2027/preview/
+B2027/media/
+B2027/var/

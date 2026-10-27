@@ -1,0 +1,28 @@
+{
+  "registry_name": "B2027_Club_Configuration",
+  "project_code": "B2027",
+  "commercial_name": "Bimbo · 100",
+  "cefr_level": "B2",
+  "role_id": "CLUB_SK_PROD_SPEAKING",
+  "framework": {
+    "name": "CLUB-SK-PROD",
+    "ordered_stages": ["L-IN", "OVW", "TL", "Q3", "ART", "FP", "REF", "FBDC"]
+  },
+  "budgets": {
+    "article_word_min": 120,
+    "article_word_max": 220,
+    "tl_item_min": 3,
+    "tl_item_max": 5,
+    "plan_sheet_question_min": 6,
+    "q3_count": 3,
+    "reflection_seconds_min": 90,
+    "reflection_seconds_max": 120
+  },
+  "v1": {
+    "article_provenance": "generate_from_topic",
+    "situational_brief": "auto_from_topic",
+    "ovw_mode": "template",
+    "render_target": "local_html",
+    "unit_title": "topic"
+  }
+}

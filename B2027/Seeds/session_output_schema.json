@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B2027_Session_Output_Schema",
+  "description": "Generated Club session JSON (CLUB_SK_PROD_SPEAKING). Dual titles + materials per LOCKS §§6, 10, 12.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_metadata", "plan_sheet", "stages"],
+  "properties": {
+    "session_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_code",
+        "session_id",
+        "topic",
+        "unit_title",
+        "session_title",
+        "cefr_level",
+        "role_id",
+        "framework_name"
+      ],
+      "properties": {
+        "project_code": { "type": "string", "const": "B2027" },
+        "session_id": {
+          "type": "string",
+          "pattern": "^c(00[1-9]|0[1-9][0-9]|100)$"
+        },
+        "topic": { "type": "string", "minLength": 1 },
+        "unit_title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Upload / platform unit title — equals topic."
+        },
+        "session_title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Same as unit_title / topic (LOCKS §3)."
+        },
+        "cefr_level": { "type": "string", "const": "B2" },
+        "role_id": {
+          "type": "string",
+          "const": "CLUB_SK_PROD_SPEAKING"
+        },
+        "framework_name": {
+          "type": "string",
+          "const": "CLUB-SK-PROD"
+        }
+      }
+    },
+    "plan_sheet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questions"],
+      "properties": {
+        "questions": {
+          "type": "array",
+          "minItems": 6,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "First 3 → Q3; remainder → FP."
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/stage_block" }
+    }
+  },
+  "allOf": [
+    {
+      "description": "Stage codes must appear in Club order.",
+      "properties": {
+        "stages": {
+          "prefixItems": [
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "L-IN" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "OVW" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "TL" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "Q3" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "ART" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "FP" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "REF" } }
+            },
+            {
+              "type": "object",
+              "required": ["stage_code"],
+              "properties": { "stage_code": { "const": "FBDC" } }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "description": "ART requires reading_passage with passage_id.",
+      "properties": {
+        "stages": {
+          "prefixItems": [
+            true,
+            true,
+            true,
+            true,
+            {
+              "type": "object",
+              "required": ["materials"],
+              "properties": {
+                "materials": {
+                  "type": "object",
+                  "required": ["reading_passage"],
+                  "properties": {
+                    "reading_passage": {
+                      "type": "object",
+                      "required": ["title", "body", "passage_id"]
+                    }
+                  }
+                }
+              }
+            },
+            true,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "description": "TL requires vocabulary_items (3–5) and/or column_banks.",
+      "properties": {
+        "stages": {
+          "prefixItems": [
+            true,
+            true,
+            {
+              "type": "object",
+              "required": ["materials"],
+              "properties": {
+                "materials": {
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "required": ["vocabulary_items"],
+                      "properties": {
+                        "vocabulary_items": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 5
+                        }
+                      }
+                    },
+                    {
+                      "required": ["column_banks"],
+                      "properties": {
+                        "column_banks": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 4
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "text_asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "body": { "type": "string", "minLength": 1 },
+        "passage_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "column_bank": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "items"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "stage_materials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reading_passage": { "$ref": "#/$defs/text_asset" },
+        "vocabulary_items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "column_banks": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/column_bank" }
+        }
+      },
+      "description": "No tasks[] — open speaking only (no fake MCQs)."
+    },
+    "stage_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_code",
+        "title",
+        "student_title",
+        "teacher_notes",
+        "student_content"
+      ],
+      "properties": {
+        "stage_code": {
+          "type": "string",
+          "enum": [
+            "L-IN",
+            "OVW",
+            "TL",
+            "Q3",
+            "ART",
+            "FP",
+            "REF",
+            "FBDC"
+          ]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "student_title": { "type": "string", "minLength": 1 },
+        "teacher_notes": { "type": "string", "minLength": 1 },
+        "student_content": { "type": "string", "minLength": 1 },
+        "materials": { "$ref": "#/$defs/stage_materials" }
+      }
+    }
+  }
+}

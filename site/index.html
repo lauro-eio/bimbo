@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Bimbo — client hub</title>
+  <style>
+    :root { --ink:#1c2128; --muted:#5a6570; --bg:#f3f5f7; --accent:#9e1b2e; --line:#d2d8de; --paper:#fff; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; min-height:100vh; }
+    .wrap { max-width:40rem; margin:0 auto; padding:2.25rem 1.25rem 3rem; }
+    .brand { display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; }
+    .brand img { height:28px; width:auto; }
+    .badge { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); }
+    h1 { font-size:1.75rem; margin:0.5rem 0 0.75rem; }
+    .lede { color:var(--muted); margin:0 0 1.5rem; }
+    ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.65rem; }
+    a.card { display:block; padding:1rem 1.1rem; background:var(--paper); border:1px solid var(--line); border-radius:8px; text-decoration:none; color:inherit; }
+    a.card:hover { border-color:var(--accent); }
+    .name { font-weight:700; }
+    .meta { font-size:0.85rem; color:var(--muted); margin-top:0.25rem; }
+    .note { margin-top:1.5rem; font-size:0.85rem; color:var(--muted); }
+    code { font-size:0.9em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <img src="assets/egregor-logo.png" alt="Egregor" />
+    </div>
+    <p class="badge">Bimbo · client hub</p>
+    <h1>Engagements</h1>
+    <p class="lede">Published HTML only. Factory files stay outside this folder.</p>
+    <ul>
+      <li>
+        <a class="card" href="bimbo-100/index.html">
+          <div class="name">Bimbo · 100</div>
+          <div class="meta">channel html · c001 on site · c002–c010 reserved</div>
+        </a>
+      </li>
+    </ul>
+    <p class="note">Layout: <code>special-projects/POLICIES.md</code> · Vercel serves <code>site/</code>.</p>
+  </div>
+</body>
+</html>

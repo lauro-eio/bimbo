@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B2027_Editorial_Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_name",
+    "show_dont_tell",
+    "art_form",
+    "art_form_description",
+    "banned_phrases",
+    "channel_discipline"
+  ],
+  "properties": {
+    "registry_name": { "type": "string", "const": "B2027_Editorial" },
+    "show_dont_tell": { "type": "boolean", "const": true },
+    "art_form": { "type": "string", "const": "decision_vignette" },
+    "art_form_description": { "type": "string", "minLength": 1 },
+    "banned_phrases": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string", "minLength": 2 }
+    },
+    "channel_discipline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["student_content", "teacher_notes", "ovw_learner"],
+      "properties": {
+        "student_content": { "type": "string", "minLength": 1 },
+        "teacher_notes": { "type": "string", "minLength": 1 },
+        "ovw_learner": { "type": "string", "const": "HOST_ONLY" }
+      }
+    }
+  }
+}

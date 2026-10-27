@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B2027_Compiled_Session_Reference_Schema",
+  "description": "Compiler output: one session payload for CLUB_SK_PROD_SPEAKING generate. Never a whole-program blob.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pipeline_metadata",
+    "target_audience_guardrails",
+    "session_context",
+    "compiled_linguistic_targets",
+    "framework_runtime",
+    "budgets",
+    "ovw_host_content",
+    "editorial"
+  ],
+  "properties": {
+    "pipeline_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_code",
+        "session_id",
+        "cefr_level",
+        "role_id",
+        "framework_name"
+      ],
+      "properties": {
+        "project_code": { "type": "string", "const": "B2027" },
+        "session_id": {
+          "type": "string",
+          "pattern": "^c(00[1-9]|0[1-9][0-9]|100)$"
+        },
+        "cefr_level": { "type": "string", "const": "B2" },
+        "role_id": {
+          "type": "string",
+          "const": "CLUB_SK_PROD_SPEAKING"
+        },
+        "framework_name": {
+          "type": "string",
+          "const": "CLUB-SK-PROD"
+        }
+      }
+    },
+    "target_audience_guardrails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "description", "constraint_level"],
+      "properties": {
+        "profile": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "constraint_level": { "type": "string", "const": "MANDATORY" },
+        "prefer": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "avoid": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "session_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "topic",
+        "unit_title",
+        "situational_brief"
+      ],
+      "properties": {
+        "topic": { "type": "string", "minLength": 1 },
+        "unit_title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Upload / platform unit title — equals topic."
+        },
+        "situational_brief": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Auto-derived from topic at compile (LOCKS §13)."
+        }
+      }
+    },
+    "compiled_linguistic_targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "tags"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "tags": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": ["lexis", "pragmatics"]
+            }
+          }
+        }
+      }
+    },
+    "framework_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework_name", "ordered_stages"],
+      "properties": {
+        "framework_name": {
+          "type": "string",
+          "const": "CLUB-SK-PROD"
+        },
+        "ordered_stages": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "prefixItems": [
+            { "const": "L-IN" },
+            { "const": "OVW" },
+            { "const": "TL" },
+            { "const": "Q3" },
+            { "const": "ART" },
+            { "const": "FP" },
+            { "const": "REF" },
+            { "const": "FBDC" }
+          ],
+          "items": false
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "article_word_min",
+        "article_word_max",
+        "tl_item_min",
+        "tl_item_max",
+        "plan_sheet_question_min",
+        "q3_count",
+        "reflection_seconds_min",
+        "reflection_seconds_max"
+      ],
+      "properties": {
+        "article_word_min": { "type": "integer", "minimum": 1 },
+        "article_word_max": { "type": "integer", "minimum": 1 },
+        "tl_item_min": { "type": "integer", "minimum": 1 },
+        "tl_item_max": { "type": "integer", "minimum": 1 },
+        "plan_sheet_question_min": { "type": "integer", "minimum": 6 },
+        "q3_count": { "type": "integer", "const": 3 },
+        "reflection_seconds_min": { "type": "integer", "minimum": 1 },
+        "reflection_seconds_max": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ovw_host_content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "OVW template with {{STAGE_ROSTER}} already substituted."
+    },
+    "editorial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "show_dont_tell",
+        "art_form",
+        "art_form_description",
+        "banned_phrases",
+        "ovw_learner"
+      ],
+      "properties": {
+        "show_dont_tell": { "type": "boolean", "const": true },
+        "art_form": { "type": "string", "const": "decision_vignette" },
+        "art_form_description": { "type": "string", "minLength": 1 },
+        "banned_phrases": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 2 }
+        },
+        "ovw_learner": { "type": "string", "const": "HOST_ONLY" }
+      }
+    }
+  }
+}

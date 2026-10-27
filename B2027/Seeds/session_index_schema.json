@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B2027_Session_Index_Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry_name", "source", "sessions"],
+  "properties": {
+    "registry_name": {
+      "type": "string",
+      "const": "B2027_Session_Index"
+    },
+    "source": {
+      "type": "string",
+      "const": "source/bimbo-2027-program.md"
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["session_id", "week", "slot", "domain", "topic", "unit_title"],
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "pattern": "^c(00[1-9]|0[1-9][0-9]|100)$",
+            "description": "Class number c001–c100. Content id, not a calendar date."
+          },
+          "week": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Program week 1–50. Pairing metadata, not a generation input."
+          },
+          "slot": {
+            "type": "integer",
+            "enum": [1, 2],
+            "description": "Order inside the week (first or second class). Not a generation track."
+          },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "Finance",
+              "Human Resources",
+              "IT",
+              "Marketing",
+              "Supply Chain",
+              "Lifestyle",
+              "Management"
+            ],
+            "description": "Week domain. Metadata only; the topic string is the generation spine."
+          },
+          "topic": { "type": "string", "minLength": 1 },
+          "unit_title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Upload / platform unit title — equals topic."
+          }
+        }
+      }
+    }
+  }
+}

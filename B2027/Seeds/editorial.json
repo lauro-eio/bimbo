@@ -1,0 +1,30 @@
+{
+  "registry_name": "B2027_Editorial",
+  "show_dont_tell": true,
+  "art_form": "decision_vignette",
+  "art_form_description": "120–220 word workplace scene or decision moment that forces opinion. Not a textbook explainer. Show people choosing, reacting, or failing with data/visuals — do not lecture definitions.",
+  "banned_phrases": [
+    "In today's",
+    "In todays",
+    "In our modern age",
+    "In a fast-paced world",
+    "In this day and age",
+    "data-driven landscape",
+    "data-driven corporate",
+    "corporate landscape",
+    "Welcome to today's",
+    "Welcome to todays",
+    "Welcome to our speaking",
+    "In our professional lives",
+    "delve deeper",
+    "dive deeper",
+    "at the end of the day",
+    "it goes without saying",
+    "leveraging synergies"
+  ],
+  "channel_discipline": {
+    "student_content": "task prompts and questions only — never ceremony, agenda maps, or minute-by-minute facilitation",
+    "teacher_notes": "short procedure bullets only — grouping, timing cues, what to monitor — not a spoken host script",
+    "ovw_learner": "HOST_ONLY"
+  }
+}
