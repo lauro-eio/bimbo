@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bimbo · 100 · Learner · c004 — IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</title>
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #ddd;
+      --host: #2c5282;
+      --learner: #276749;
+      --teacher-bg: #f3f6f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+      color: var(--text);
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+      background: #fff;
+    }
+    body.view-host { border-top: 4px solid var(--host); }
+    body.view-learner { border-top: 4px solid var(--learner); }
+    h1 { font-size: 1.45rem; margin: 0 0 0.35rem; }
+    h2 { font-size: 1.1rem; margin: 0; }
+    h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin: 0 0 0.5rem;
+    }
+    h4 { font-size: 0.95rem; margin: 0.75rem 0 0.35rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+    .plan-sheet {
+      border: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      margin: 0 0 1.5rem;
+      background: #fafafa;
+    }
+    .plan-sheet ol { margin: 0.35rem 0 0; padding-left: 1.25rem; }
+    .stage {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 0;
+      margin: 0;
+    }
+    .stage-header {
+      display: flex;
+      gap: 0.65rem;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+    .stage-code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: var(--host);
+      background: var(--teacher-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    body.view-learner .stage-code { display: none; }
+    .teacher {
+      background: var(--teacher-bg);
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 0.85rem;
+      border-radius: 4px;
+    }
+    .handout-title { margin-top: 0; }
+    .passage {
+      border-left: 3px solid var(--border);
+      padding-left: 0.85rem;
+      margin: 0.75rem 0;
+    }
+    ul { margin: 0.35rem 0 0.75rem; padding-left: 1.25rem; }
+    p { margin: 0 0 0.65rem; }
+    a { color: var(--host); }
+    .site-nav { font-family: system-ui, sans-serif; font-size: 0.85rem; margin: 0 0 1rem; }
+    .site-nav a { margin-right: 0.85rem; }
+  </style>
+</head>
+<body class="view-learner">
+<nav class="site-nav"><a href="index.html">Bimbo · 100</a><a href="c004_new-shape_host.html">Host</a></nav>
+<h1>c004 — IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</h1>
+<p class="meta">Bimbo · 100 · learner · IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</p>
+<section class="plan-sheet"><h3>Plan sheet</h3><ol><li>To what extent should maintenance teams rely on automated sensor alerts over manual floor inspections?</li><li>How can plant managers balance the high initial cost of sensor installation against the risk of unexpected line stoppages?</li><li>Who should be held accountable when an unmonitored conveyor belt fails despite prior warning signs from older equipment?</li><li>What are the main communication hurdles between automation engineers and shift supervisors during critical line upgrades?</li><li>Should companies mandate full predictive maintenance rollouts across all legacy factories immediately, or pilot them slowly?</li><li>How does shifting from reactive repairs to predictive maintenance alter the daily stress and responsibilities of floor technicians?</li></ol></section>
+<article class="stage" id="stage-L-IN">
+<header class="stage-header"><h2>Quick hazard match game</h2></header>
+<section class="handout">
+<p>Play the warning sign game with your partner: take turns naming hidden mechanical symptoms on factory lines before a breakdown happens. Who can name three convincing signs first?</p>
+</section>
+</article>
+<article class="stage" id="stage-ART">
+<header class="stage-header"><h2>The baking line incident</h2></header>
+<section class="handout">
+<p>Read the following short workplace scenario aloud to your group.</p>
+<div class="passage">
+<h4>The Baking Line Incident</h4>
+<p class="meta">passage_id: art_c004</p>
+<p>The control room monitor blinked red at 2:14 AM. Conveyor belt section four on the primary baking line was running three degrees hotter than its baseline threshold. Shift supervisor Marcus stared at the thermal graph, debating whether to halt the entire assembly for an unscheduled check or push through until the morning shift. Stopping the line meant losing four thousand units of dough and delaying distribution trucks across three regions. Ignoring the reading risked a catastrophic bearing seizure that could shut the factory down for days. Marcus reached for the radio, called the lead maintenance technician, and asked if the newly delivered vibration sensors could give a definitive reading. The technician sighed, looking at the unconnected sensor boxes sitting on the workbench, waiting for budget approval that had stalled for three weeks.</p>
+</div>
+</section>
+</article>
+<article class="stage" id="stage-TL">
+<header class="stage-header"><h2>Phrases for industrial maintenance</h2></header>
+<section class="handout">
+<p>Incorporate these expressions naturally when discussing equipment reliability and maintenance strategies.</p>
+<div class="column-banks">
+<h4>Bank</h4><ul><li>flag an anomaly</li><li>baseline threshold</li><li>predictive analytics</li></ul>
+<h4>Bank</h4><ul><li>unscheduled downtime</li><li>catastrophic failure</li><li>mitigate operational risk</li></ul>
+</div>
+</section>
+</article>
+<article class="stage" id="stage-Q3">
+<header class="stage-header"><h2>Line sensors debate</h2></header>
+<section class="handout">
+<p>Argue both sides in this debate using the following three questions, referencing the baking line scenario where relevant:</p>
+<ul><li>To what extent should maintenance teams rely on automated sensor alerts over manual floor inspections?</li><li>How can plant managers balance the high initial cost of sensor installation against the risk of unexpected line stoppages?</li><li>Who should be held accountable when an unmonitored conveyor belt fails despite prior warning signs from older equipment?</li></ul>
+</section>
+</article>
+<article class="stage" id="stage-FP">
+<header class="stage-header"><h2>Broader plant discussions</h2></header>
+<section class="handout">
+<p>Share your general opinion by exploring these operational challenges:</p>
+<ul><li>What are the main communication hurdles between automation engineers and shift supervisors during critical line upgrades?</li><li>Should companies mandate full predictive maintenance rollouts across all legacy factories immediately, or pilot them slowly?</li><li>How does shifting from reactive repairs to predictive maintenance alter the daily stress and responsibilities of floor technicians?</li></ul>
+</section>
+</article>
+<article class="stage" id="stage-REF">
+<header class="stage-header"><h2>Your takeaways</h2></header>
+<section class="handout">
+<p>Speak for 90 to 120 seconds without interruption. Summarize your biggest realization about implementing sensor technology in manufacturing environments.</p>
+</section>
+</article>
+<article class="stage" id="stage-FBDC">
+<header class="stage-header"><h2>Stronger wording</h2></header>
+<section class="handout">
+<p>Review the host feedback on professional phrasing and note down two advanced collocations to use in your next meeting.</p>
+</section>
+</article>
+</body>
+</html>
