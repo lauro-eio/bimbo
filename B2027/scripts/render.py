@@ -12,11 +12,14 @@ from typing import Any
 
 from common import (
     CONTENT,
+    NEW_SHAPE,
     ROOT,
     SEEDS,
     content_path,
+    content_shape_path,
     find_session,
     load_json,
+    shape_stem,
 )
 
 PREVIEW = ROOT / "preview"
@@ -323,14 +326,20 @@ def render_learner_page(session: dict[str, Any]) -> str:
     return page_shell(f"{program} · Learner · {title}", "\n".join(body_parts), "learner")
 
 
-def resolve_content_file(session_id: str | None, path: Path | None) -> Path:
+def resolve_content_file(
+    session_id: str | None,
+    path: Path | None,
+    shape: str | None = None,
+) -> Path:
     if path:
         return path
     if not session_id:
         raise RenderError("pass --session or --file")
     index = load_json(SEEDS / "session_index.json")
     find_session(index, session_id)
-    preferred = content_path(session_id)
+    preferred = (
+        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
+    )
     if preferred.is_file():
         return preferred
     legacy = sorted(CONTENT.glob(f"{session_id}_*.json"))
@@ -339,10 +348,15 @@ def resolve_content_file(session_id: str | None, path: Path | None) -> Path:
     raise RenderError(f"Content not found: {preferred}. Generate first.")
 
 
-def preview_paths(session: dict[str, Any], session_id: str) -> tuple[Path, Path]:
+def preview_paths(
+    session: dict[str, Any],
+    session_id: str,
+    shape: str | None = None,
+) -> tuple[Path, Path]:
+    stem = shape_stem(session_id) if shape == NEW_SHAPE else session_id
     return (
-        PREVIEW / f"{session_id}_host.html",
-        PREVIEW / f"{session_id}_learner.html",
+        PREVIEW / f"{stem}_host.html",
+        PREVIEW / f"{stem}_learner.html",
     )
 
 
@@ -355,10 +369,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Render B2027 host + learner HTML")
     parser.add_argument("--session", help="session_id (c001–c100)")
     parser.add_argument("--file", type=Path, help="Explicit content JSON path")
+    parser.add_argument(
+        "--shape",
+        choices=[NEW_SHAPE],
+        help="Render preview/{session}_new-shape_{host,learner}.html",
+    )
     args = parser.parse_args(argv)
 
     try:
-        content_file = resolve_content_file(args.session, args.file)
+        content_file = resolve_content_file(args.session, args.file, args.shape)
     except (RenderError, KeyError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
@@ -370,7 +389,7 @@ def main(argv: list[str] | None = None) -> int:
 
     meta = session.get("session_metadata") or {}
     session_id = str(meta.get("session_id") or args.session or content_file.stem)
-    host_path, learner_path = preview_paths(session, session_id)
+    host_path, learner_path = preview_paths(session, session_id, args.shape)
 
     write_text(host_path, render_host_page(session))
     write_text(learner_path, render_learner_page(session))

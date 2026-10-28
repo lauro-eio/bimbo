@@ -11,11 +11,16 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from common import (
+    NEW_SHAPE,
+    NEW_SHAPE_LABELS,
+    NEW_SHAPE_ORDER,
     SEEDS,
     auto_situational_brief,
     compiled_path,
+    compiled_shape_path,
     fill_ovw_template,
     find_session,
+    lesson_model_for,
     linguistic_label_from_topic,
     load_json,
     save_json,
@@ -40,7 +45,7 @@ def validate_against_schema(instance: dict[str, Any], schema_path: Path) -> None
         raise CompileError(f"Compiled reference failed schema:\n{messages}")
 
 
-def compile_session(session_id: str) -> dict[str, Any]:
+def compile_session(session_id: str, shape: str | None = None) -> dict[str, Any]:
     config = load_json(SEEDS / "configuration.json")
     audience = load_json(SEEDS / "audience.json")
     editorial = load_json(SEEDS / "editorial.json")
@@ -58,6 +63,10 @@ def compile_session(session_id: str) -> dict[str, Any]:
 
     budgets = config["budgets"]
     guardrails = audience["target_audience"]
+    new_shape = shape == NEW_SHAPE
+    lesson_model = lesson_model_for(session_id) if new_shape else None
+    stage_order = NEW_SHAPE_ORDER if new_shape else list(config["framework"]["ordered_stages"])
+    ovw_labels = NEW_SHAPE_LABELS[lesson_model] if lesson_model else None
 
     session_context: dict[str, Any] = {
         "topic": topic,
@@ -89,7 +98,8 @@ def compile_session(session_id: str) -> dict[str, Any]:
         ],
         "framework_runtime": {
             "framework_name": config["framework"]["name"],
-            "ordered_stages": list(config["framework"]["ordered_stages"]),
+            "ordered_stages": stage_order,
+            **({"shape": NEW_SHAPE, "lesson_model": lesson_model} if new_shape else {}),
         },
         "budgets": {
             "article_word_min": budgets["article_word_min"],
@@ -101,7 +111,7 @@ def compile_session(session_id: str) -> dict[str, Any]:
             "reflection_seconds_min": budgets["reflection_seconds_min"],
             "reflection_seconds_max": budgets["reflection_seconds_max"],
         },
-        "ovw_host_content": fill_ovw_template(ovw_template),
+        "ovw_host_content": fill_ovw_template(ovw_template, ovw_labels),
         "editorial": {
             "show_dont_tell": editorial["show_dont_tell"],
             "art_form": editorial["art_form"],
@@ -111,9 +121,16 @@ def compile_session(session_id: str) -> dict[str, Any]:
         },
     }
 
-    validate_against_schema(
-        payload, SEEDS / "compiled_session_reference_schema.json"
-    )
+    if new_shape:
+        runtime = payload["framework_runtime"]
+        if runtime["ordered_stages"] != NEW_SHAPE_ORDER:
+            raise CompileError(f"new-shape order must be {NEW_SHAPE_ORDER}")
+        if runtime["lesson_model"] not in NEW_SHAPE_LABELS:
+            raise CompileError(f"unknown lesson_model for {session_id}")
+    else:
+        validate_against_schema(
+            payload, SEEDS / "compiled_session_reference_schema.json"
+        )
     return payload
 
 
@@ -125,6 +142,11 @@ def main(argv: list[str] | None = None) -> int:
         help="session_id (c001–c100), e.g. c001",
     )
     parser.add_argument(
+        "--shape",
+        choices=[NEW_SHAPE],
+        help="Write a side compiled ref (compiled/{session}_new-shape.json). Default path unchanged.",
+    )
+    parser.add_argument(
         "-o",
         "--output",
         type=Path,
@@ -133,7 +155,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        payload = compile_session(args.session)
+        payload = compile_session(args.session, shape=args.shape)
     except KeyError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
@@ -141,7 +163,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
-    out = args.output if args.output else compiled_path(args.session)
+    if args.output:
+        out = args.output
+    elif args.shape == NEW_SHAPE:
+        out = compiled_shape_path(args.session)
+    else:
+        out = compiled_path(args.session)
     save_json(out, payload)
     print(f"Wrote {out}")
     return 0

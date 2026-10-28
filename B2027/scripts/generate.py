@@ -15,11 +15,15 @@ from dotenv import load_dotenv
 from jsonschema import Draft202012Validator
 
 from common import (
+    NEW_SHAPE,
     PROMPTS,
     ROOT,
     SEEDS,
     compiled_path,
+    compiled_shape_path,
     content_path,
+    content_shape_path,
+    lesson_model_for,
     load_json,
     save_json,
 )
@@ -171,34 +175,66 @@ def parse_session_response(raw: str) -> dict[str, Any]:
     return payload
 
 
-def schema_validate_session(session: dict[str, Any]) -> None:
+def schema_validate_session(
+    session: dict[str, Any],
+    shape: str | None = None,
+    lesson_model: str | None = None,
+) -> None:
     from validate import validate_session_dod
 
-    schema = load_json(SEEDS / "session_output_schema.json")
-    errors = sorted(
-        Draft202012Validator(schema).iter_errors(session),
-        key=lambda e: list(e.path),
-    )
-    if errors:
-        messages = "\n".join(
-            f"  - {'/'.join(str(p) for p in err.path) or '(root)'}: {err.message}"
-            for err in errors
+    if shape != NEW_SHAPE:
+        schema = load_json(SEEDS / "session_output_schema.json")
+        errors = sorted(
+            Draft202012Validator(schema).iter_errors(session),
+            key=lambda e: list(e.path),
         )
-        raise GenerateError(f"Session failed schema validation:\n{messages}")
+        if errors:
+            messages = "\n".join(
+                f"  - {'/'.join(str(p) for p in err.path) or '(root)'}: {err.message}"
+                for err in errors
+            )
+            raise GenerateError(f"Session failed schema validation:\n{messages}")
 
     config = load_json(SEEDS / "configuration.json")
     editorial = load_json(SEEDS / "editorial.json")
-    dod = validate_session_dod(session, config, editorial)
+    dod = validate_session_dod(
+        session, config, editorial, shape=shape, lesson_model=lesson_model
+    )
     if dod:
         raise GenerateError("Session failed Club DoD:\n" + "\n".join(dod))
 
 
-def build_repair_prompt(session: dict[str, Any], validation_error: str) -> str:
+def build_repair_prompt(
+    session: dict[str, Any],
+    validation_error: str,
+    shape: str | None = None,
+    lesson_model: str | None = None,
+) -> str:
+    if shape == NEW_SHAPE:
+        if lesson_model == "roleplay":
+            task_rules = (
+                "- L-IN is situation questions, not a riddle and not a game.\n"
+                "- plan_sheet.questions still has at least 6 items.\n"
+                "- Q3 is the role-play: name the roles, the situation, and the outcome. "
+                "Do not paste plan-sheet questions into Q3.\n"
+                "- FP is one or two debrief questions and must include a question mark.\n"
+            )
+        else:
+            task_rules = (
+                "- L-IN student_content must contain the word game (a topic game).\n"
+                "- Q3 is the debate and must include the first three plan_sheet questions and the word debate or side.\n"
+                "- FP is general opinion and must include the word opinion plus the remaining plan_sheet questions.\n"
+            )
+        order = "L-IN, OVW, ART, TL, Q3, FP, REF, FBDC"
+        plan_rule = task_rules
+    else:
+        order = "L-IN, OVW, TL, Q3, ART, FP, REF, FBDC"
+        plan_rule = "- plan_sheet.questions ≥ 6; first 3 in Q3, rest in FP.\n"
     return (
         "You are fixing a B2027 Club session JSON so it passes schema + Club DoD. "
         "Keep pedagogy and topic.\n\n"
         "Rules:\n"
-        "- Exactly 8 stages: L-IN, OVW, TL, Q3, ART, FP, REF, FBDC.\n"
+        f"- Exactly 8 stages: {order}.\n"
         "- session_metadata.session_id is the class id (c001–c100).\n"
         "- session_metadata.unit_title and session_title must equal topic.\n"
         "- Omit date, weekday, and track.\n"
@@ -214,7 +250,7 @@ def build_repair_prompt(session: dict[str, Any], validation_error: str) -> str:
         "(In today's…, data-driven landscape, Welcome to today's…).\n"
         "- ART student_content = one short read-aloud line; body in reading_passage.\n"
         "- TL prefer column_banks; short student prompt.\n"
-        "- plan_sheet.questions ≥ 6; first 3 in Q3, rest in FP.\n"
+        f"{plan_rule}"
         "- No materials.tasks / no MCQs.\n"
         "- Return ONLY valid JSON (no markdown fences).\n\n"
         f"Validation errors:\n{validation_error}\n\n"
@@ -245,18 +281,32 @@ def pin_session_identity(
     meta.pop("track_focus", None)
 
 
+def pin_ovw_map(session: dict[str, Any], compiled_ref: dict[str, Any]) -> None:
+    """Keep the host map in the compiled stage order."""
+    host_map = compiled_ref.get("ovw_host_content")
+    if not isinstance(host_map, str) or not host_map.strip():
+        return
+    for stage in session.get("stages") or []:
+        if isinstance(stage, dict) and stage.get("stage_code") == "OVW":
+            stage["teacher_notes"] = host_map
+            stage["student_content"] = "HOST_ONLY"
+            return
+
+
 def generate_one(
     session_id: str,
     model_name: str,
     dry_run: bool,
     do_validate: bool,
     out_path: Path | None,
+    shape: str | None = None,
 ) -> Path:
-    in_path = compiled_path(session_id)
+    in_path = compiled_shape_path(session_id) if shape == NEW_SHAPE else compiled_path(session_id)
     if not in_path.is_file():
         raise GenerateError(
             f"Compiled reference not found: {in_path}\n"
             f"Run: python scripts/compile.py --session {session_id}"
+            + (" --shape new-shape" if shape == NEW_SHAPE else "")
         )
 
     compiled_ref = load_json(in_path)
@@ -265,7 +315,10 @@ def generate_one(
         raise GenerateError("Compiled reference missing pipeline_metadata.role_id")
 
     prompt = build_prompt(load_prompt(role_id), compiled_ref)
-    destination = out_path or content_path(session_id)
+    lesson_model = lesson_model_for(session_id) if shape == NEW_SHAPE else None
+    destination = out_path or (
+        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
+    )
 
     if dry_run:
         print(prompt)
@@ -274,6 +327,8 @@ def generate_one(
     raw = call_gemini(prompt, model_name)
     session = parse_session_response(raw)
     pin_session_identity(session, session_id, compiled_ref)
+    if shape == NEW_SHAPE:
+        pin_ovw_map(session, compiled_ref)
     title_fixes = scrub_student_title_jargon(session)
     if title_fixes:
         print(
@@ -286,17 +341,22 @@ def generate_one(
 
     if do_validate:
         try:
-            schema_validate_session(session)
+            schema_validate_session(session, shape=shape, lesson_model=lesson_model)
         except GenerateError as first_exc:
             print(
                 f"  Validation failed for {session_id}; one repair pass…",
                 file=sys.stderr,
             )
             repair_raw = call_gemini(
-                build_repair_prompt(session, str(first_exc)), model_name
+                build_repair_prompt(
+                    session, str(first_exc), shape=shape, lesson_model=lesson_model
+                ),
+                model_name,
             )
             session = parse_session_response(repair_raw)
             pin_session_identity(session, session_id, compiled_ref)
+            if shape == NEW_SHAPE:
+                pin_ovw_map(session, compiled_ref)
             title_fixes = scrub_student_title_jargon(session)
             if title_fixes:
                 print(
@@ -307,7 +367,7 @@ def generate_one(
             if ensure_ref_timing(session):
                 print("  Added REF 90–120s timing cue after repair", file=sys.stderr)
             try:
-                schema_validate_session(session)
+                schema_validate_session(session, shape=shape, lesson_model=lesson_model)
                 print(f"  Repair PASS for {session_id}", file=sys.stderr)
             except GenerateError as second_exc:
                 raise GenerateError(
@@ -322,6 +382,11 @@ def main(argv: list[str] | None = None) -> int:
     load_env()
     parser = argparse.ArgumentParser(description="Generate a B2027 Club session")
     parser.add_argument("--session", required=True, help="session_id (c001–c100)")
+    parser.add_argument(
+        "--shape",
+        choices=[NEW_SHAPE],
+        help="Read compiled/{session}_new-shape.json and write content/{session}_new-shape.json",
+    )
     parser.add_argument(
         "--model",
         default=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
@@ -347,6 +412,7 @@ def main(argv: list[str] | None = None) -> int:
             dry_run=args.dry_run,
             do_validate=not args.no_validate,
             out_path=args.output,
+            shape=args.shape,
         )
     except GenerateError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

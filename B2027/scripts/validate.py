@@ -11,7 +11,17 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from common import CONTENT, SEEDS, content_path, find_session, load_json
+from common import (
+    CONTENT,
+    NEW_SHAPE,
+    NEW_SHAPE_ORDER,
+    SEEDS,
+    content_path,
+    content_shape_path,
+    find_session,
+    lesson_model_for,
+    load_json,
+)
 
 SEED_VALIDATIONS: list[tuple[Path, Path]] = [
     (SEEDS / "configuration.json", SEEDS / "configuration_schema.json"),
@@ -87,21 +97,24 @@ def validate_session_dod(
     session: dict[str, Any],
     config: dict[str, Any],
     editorial: dict[str, Any],
+    shape: str | None = None,
+    lesson_model: str | None = None,
 ) -> list[str]:
     messages: list[str] = []
     budgets = config["budgets"]
     banned = list(editorial.get("banned_phrases") or [])
 
-    schema = load_json(SEEDS / "session_output_schema.json")
-    errors = sorted(
-        Draft202012Validator(schema).iter_errors(session),
-        key=lambda e: list(e.path),
-    )
-    if errors:
-        messages.extend(
-            f"  - schema {'/'.join(str(p) for p in e.path) or '(root)'}: {e.message}"
-            for e in errors
+    if shape != NEW_SHAPE:
+        schema = load_json(SEEDS / "session_output_schema.json")
+        errors = sorted(
+            Draft202012Validator(schema).iter_errors(session),
+            key=lambda e: list(e.path),
         )
+        if errors:
+            messages.extend(
+                f"  - schema {'/'.join(str(p) for p in e.path) or '(root)'}: {e.message}"
+                for e in errors
+            )
 
     meta = session.get("session_metadata") or {}
     topic = str(meta.get("topic") or "").strip()
@@ -127,8 +140,9 @@ def validate_session_dod(
         messages.append("  - stages: expected exactly 8 stage objects")
     else:
         codes = [s.get("stage_code") for s in stages if isinstance(s, dict)]
-        if codes != STAGE_ORDER:
-            messages.append(f"  - stages: order must be {STAGE_ORDER}; got {codes}")
+        expected = NEW_SHAPE_ORDER if shape == NEW_SHAPE else STAGE_ORDER
+        if codes != expected:
+            messages.append(f"  - stages: order must be {expected}; got {codes}")
 
     for i, stage in enumerate(stages if isinstance(stages, list) else []):
         if not isinstance(stage, dict):
@@ -244,6 +258,42 @@ def validate_session_dod(
 
     q3 = stage_by_code(session, "Q3")
     fp = stage_by_code(session, "FP")
+    if shape == NEW_SHAPE:
+        q3_text = str((q3 or {}).get("student_content") or "")
+        fp_text = str((fp or {}).get("student_content") or "")
+        lin_text = str((lin.get("student_content") if lin else "") or "")
+        if lesson_model == "roleplay":
+            if "riddle" in lin_text.lower():
+                messages.append("  - L-IN: riddle is not used in new-shape")
+            lower_q3 = q3_text.lower()
+            if "role" not in lower_q3 or "outcome" not in lower_q3:
+                messages.append(
+                    "  - Q3 role-play must name the roles and the outcome"
+                )
+            if "?" not in fp_text:
+                messages.append("  - FP role-play debrief needs a question")
+        elif lesson_model == "debate":
+            if "game" not in lin_text.lower():
+                messages.append("  - L-IN debate model must be a topic game")
+            if "debate" not in q3_text.lower() and "side" not in q3_text.lower():
+                messages.append("  - Q3 must be a debate with sides")
+            if "opinion" not in fp_text.lower():
+                messages.append("  - FP must be general opinion")
+            if isinstance(questions, list) and len(questions) >= 3 and q3 and fp:
+                missing_q3 = [q for q in questions[:3] if q not in q3_text]
+                missing_fp = [q for q in questions[3:] if q not in fp_text]
+                if missing_q3:
+                    messages.append(
+                        f"  - Q3 student_content missing plan_sheet questions: {missing_q3!r}"
+                    )
+                if missing_fp:
+                    messages.append(
+                        f"  - FP student_content missing plan_sheet questions: {missing_fp!r}"
+                    )
+        else:
+            messages.append("  - new-shape requires lesson_model roleplay or debate")
+        return messages
+
     if isinstance(questions, list) and len(questions) >= 3 and q3 and fp:
         q3_text = str(q3.get("student_content") or "")
         fp_text = str(fp.get("student_content") or "")
@@ -261,7 +311,11 @@ def validate_session_dod(
     return messages
 
 
-def resolve_content_file(session_id: str | None, path: Path | None) -> Path:
+def resolve_content_file(
+    session_id: str | None,
+    path: Path | None,
+    shape: str | None = None,
+) -> Path:
     if path:
         return path
     if not session_id:
@@ -269,7 +323,9 @@ def resolve_content_file(session_id: str | None, path: Path | None) -> Path:
     # Confirm session exists in index
     index = load_json(SEEDS / "session_index.json")
     find_session(index, session_id)
-    preferred = content_path(session_id)
+    preferred = (
+        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
+    )
     if preferred.is_file():
         return preferred
     legacy = sorted(CONTENT.glob(f"{session_id}_*.json"))
@@ -286,6 +342,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Also validate a generated session (Club DoD)",
     )
     parser.add_argument("--session", help="session_id for --content")
+    parser.add_argument(
+        "--shape",
+        choices=[NEW_SHAPE],
+        help="Validate content/{session}_new-shape.json instead of the default file",
+    )
     parser.add_argument(
         "--file",
         type=Path,
@@ -324,7 +385,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.content:
         print("Content")
         try:
-            content_file = resolve_content_file(args.session, args.file)
+            content_file = resolve_content_file(args.session, args.file, args.shape)
         except (KeyError, ValueError) as exc:
             print(f"  FAIL {exc}")
             return 1
@@ -332,7 +393,17 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  FAIL missing file: {content_file}")
             return 1
         session = load_json(content_file)
-        messages = validate_session_dod(session, config, editorial)
+        lesson_model = None
+        if args.shape == NEW_SHAPE:
+            sid = str((session.get("session_metadata") or {}).get("session_id") or args.session or "")
+            lesson_model = lesson_model_for(sid) if sid.startswith("c") else None
+        messages = validate_session_dod(
+            session,
+            config,
+            editorial,
+            shape=args.shape,
+            lesson_model=lesson_model,
+        )
         if not messages:
             print(f"  PASS {content_file.name}")
         else:

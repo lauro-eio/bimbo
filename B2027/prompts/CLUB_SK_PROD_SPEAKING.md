@@ -76,3 +76,30 @@ Return **only** valid JSON matching `Seeds/session_output_schema.json`:
 Do **not** emit `date`, `weekday`, `track`, or `track_focus`. `session_id` is the compiled class id (`c001`–`c100`).
 
 Each stage: `stage_code`, `title`, `student_title`, `teacher_notes`, `student_content`.
+
+## New shape override
+
+Apply this section only when `framework_runtime.lesson_model` is `roleplay` or `debate`. It replaces the default stage order and the plan-sheet split above. No riddle.
+
+Stage order: `L-IN`, `OVW`, `ART`, `TL`, `Q3`, `FP`, `REF`, `FBDC`.
+
+`OVW.teacher_notes` still uses `ovw_host_content`. `OVW.student_content` is still `HOST_ONLY`.
+
+`ART` is the workplace scene the later task will use. One short read-aloud line in `student_content`. Full text only in `reading_passage`. Do not invent precise statistics.
+
+`TL` is 3–5 phrases for that task (`column_banks`).
+
+`lesson_model: roleplay` (odd class):
+
+- `L-IN`: 2–3 situation questions. Not a game and not a riddle.
+- `plan_sheet.questions` still has at least 6 items (host bank only).
+- `Q3`: the role-play. `student_content` must name the roles, the situation, and the outcome. Do not paste the plan-sheet questions here.
+- `FP`: one or two debrief questions about what the roles decided. Include a question mark.
+
+`lesson_model: debate` (even class):
+
+- `L-IN`: a short interactive speaking game that tests the topic before the teach. `student_content` must contain the word "game".
+- `Q3`: a debate. First three `plan_sheet.questions`, with two sides to argue.
+- `FP`: general opinion. The remaining plan-sheet questions.
+
+`REF` and `FBDC` stay as in the default rules, including the 90–120 second stopwatch cue.

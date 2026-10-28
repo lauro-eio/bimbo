@@ -24,6 +24,31 @@ STAGE_HOST_LABELS: list[tuple[str, str]] = [
     ("FBDC", "Wrap — host delivery & upgrades"),
 ]
 
+NEW_SHAPE = "new-shape"
+NEW_SHAPE_ORDER = ["L-IN", "OVW", "ART", "TL", "Q3", "FP", "REF", "FBDC"]
+NEW_SHAPE_LABELS: dict[str, list[tuple[str, str]]] = {
+    "roleplay": [
+        ("L-IN", "Situation hook"),
+        ("OVW", "Overview"),
+        ("ART", "Article Reading"),
+        ("TL", "Target Language"),
+        ("Q3", "Role-play"),
+        ("FP", "Role-play debrief"),
+        ("REF", "Wrap — student reflection"),
+        ("FBDC", "Wrap — host delivery & upgrades"),
+    ],
+    "debate": [
+        ("L-IN", "Topic game"),
+        ("OVW", "Overview"),
+        ("ART", "Article Reading"),
+        ("TL", "Target Language"),
+        ("Q3", "Debate"),
+        ("FP", "General opinion"),
+        ("REF", "Wrap — student reflection"),
+        ("FBDC", "Wrap — host delivery & upgrades"),
+    ],
+}
+
 
 def load_json(path: Path) -> Any:
     with path.open(encoding="utf-8") as fh:
@@ -45,6 +70,27 @@ def content_path(session_id: str) -> Path:
     return CONTENT / f"{session_id}.json"
 
 
+def class_number(session_id: str) -> int:
+    return int(session_id[1:])
+
+
+def lesson_model_for(session_id: str) -> str:
+    """Odd class = role-play. Even class = game then debate."""
+    return "roleplay" if class_number(session_id) % 2 == 1 else "debate"
+
+
+def shape_stem(session_id: str) -> str:
+    return f"{session_id}_{NEW_SHAPE}"
+
+
+def compiled_shape_path(session_id: str) -> Path:
+    return COMPILED / f"{shape_stem(session_id)}.json"
+
+
+def content_shape_path(session_id: str) -> Path:
+    return CONTENT / f"{shape_stem(session_id)}.json"
+
+
 def find_session(index: dict[str, Any], session_id: str) -> dict[str, Any]:
     for row in index.get("sessions", []):
         if row.get("session_id") == session_id:
@@ -52,16 +98,22 @@ def find_session(index: dict[str, Any], session_id: str) -> dict[str, Any]:
     raise KeyError(f"session_id not in session_index: {session_id}")
 
 
-def stage_roster_markdown() -> str:
+def stage_roster_markdown(
+    labels: list[tuple[str, str]] | None = None,
+) -> str:
+    rows = labels if labels is not None else STAGE_HOST_LABELS
     lines = [
         f"{i}. **{code}** — {label}"
-        for i, (code, label) in enumerate(STAGE_HOST_LABELS, start=1)
+        for i, (code, label) in enumerate(rows, start=1)
     ]
     return "\n".join(lines)
 
 
-def fill_ovw_template(template: str) -> str:
-    return template.replace("{{STAGE_ROSTER}}", stage_roster_markdown())
+def fill_ovw_template(
+    template: str,
+    labels: list[tuple[str, str]] | None = None,
+) -> str:
+    return template.replace("{{STAGE_ROSTER}}", stage_roster_markdown(labels))
 
 
 def auto_situational_brief(topic: str) -> str:
