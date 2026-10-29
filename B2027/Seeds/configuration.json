@@ -2,21 +2,52 @@
   "registry_name": "B2027_Club_Configuration",
   "project_code": "B2027",
   "commercial_name": "Bimbo · 100",
-  "cefr_level": "B2",
+  "default_cefr_level": "B2",
   "role_id": "CLUB_SK_PROD_SPEAKING",
   "framework": {
     "name": "CLUB-SK-PROD",
-    "ordered_stages": ["L-IN", "OVW", "TL", "Q3", "ART", "FP", "REF", "FBDC"]
+    "ordered_stages": ["L-IN", "OVW", "ART", "TL", "Q3", "FP", "REF", "FBDC"]
   },
-  "budgets": {
-    "article_word_min": 120,
-    "article_word_max": 220,
-    "tl_item_min": 3,
-    "tl_item_max": 5,
-    "plan_sheet_question_min": 6,
-    "q3_count": 3,
-    "reflection_seconds_min": 90,
-    "reflection_seconds_max": 120
+  "levels": {
+    "B1": {
+      "demand": "B1. Short sentences and concrete workplace words. The scene is one clear choice. Role-play uses two roles and a simple outcome. The game and the debate stay on one plain point.",
+      "budgets": {
+        "article_word_min": 80,
+        "article_word_max": 140,
+        "tl_item_min": 3,
+        "tl_item_max": 5,
+        "plan_sheet_question_min": 6,
+        "q3_count": 3,
+        "reflection_seconds_min": 60,
+        "reflection_seconds_max": 90
+      }
+    },
+    "B2": {
+      "demand": "B2. Professional workplace English. The speaker can give an opinion, a condition, and a short justification. The scene has a real tradeoff.",
+      "budgets": {
+        "article_word_min": 120,
+        "article_word_max": 220,
+        "tl_item_min": 3,
+        "tl_item_max": 5,
+        "plan_sheet_question_min": 6,
+        "q3_count": 3,
+        "reflection_seconds_min": 90,
+        "reflection_seconds_max": 120
+      }
+    },
+    "C1": {
+      "demand": "C1. Precise professional English. The scene turns on judgment, implication, and stakeholder tension. Phrases are exact. Do not simplify this session to B2.",
+      "budgets": {
+        "article_word_min": 160,
+        "article_word_max": 260,
+        "tl_item_min": 3,
+        "tl_item_max": 5,
+        "plan_sheet_question_min": 6,
+        "q3_count": 3,
+        "reflection_seconds_min": 90,
+        "reflection_seconds_max": 150
+      }
+    }
   },
   "v1": {
     "article_provenance": "generate_from_topic",

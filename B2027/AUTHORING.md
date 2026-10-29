@@ -12,7 +12,7 @@ Read [`LOCKS.md`](LOCKS.md) first. Do not invent a second session format.
 
 ## Session shape
 
-Every session uses the locked Club stage codes (`L-IN` → `OVW` → `TL` → `Q3` → `ART` → `FP` → `REF` → `FBDC`). Spine is **topic only**; upload / unit title = topic string. Weekday is calendar metadata only (not a generation track).
+Every session uses the locked Club stage codes (`L-IN` → `OVW` → `ART` → `TL` → `Q3` → `FP` → `REF` → `FBDC`). Odd classes are role-play. Even classes are a topic game, then a debate, then opinion. The same class is written three times, under `b1/`, `b2/`, and `c1/`. Spine is **topic only**; upload / unit title = topic string. Week and slot are calendar metadata only (not a generation track).
 
 ## Factory
 
@@ -30,11 +30,11 @@ Double-click from the file manager works the same way (detaches; logs under `var
 
 ```bash
 python scripts/validate.py
-python scripts/compile.py --session c001
-python scripts/generate.py --session c001 --dry-run
-python scripts/generate.py --session c001
-python scripts/validate.py --content --session c001
-python scripts/render.py --session c001
+python scripts/compile.py --session c001 --level b2
+python scripts/generate.py --session c001 --level b2 --dry-run
+python scripts/generate.py --session c001 --level b1
+python scripts/validate.py --content --session c001 --level b2
+python scripts/render.py --session c001 --level b2
 ```
 
 `GEMINI_API_KEY` loads from `B2027/.env` or hub `special-projects/Bimbo/.env`.

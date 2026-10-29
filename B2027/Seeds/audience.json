@@ -2,7 +2,7 @@
   "registry_name": "B2027_Audience_Guardrails",
   "target_audience": {
     "profile": "Adult corporate professionals (managers / ICs in workplace English Club)",
-    "description": "Adult professionals in a workplace English Club. Use practical, dignity-preserving professional register. Keep scenarios workplace-relevant; apply LatAm / Mexico corporate sensitivity when local context appears. Operating CEFR B2 with C1 stretch only in target language and host expressive upgrades.",
+    "description": "Adult professionals in a workplace English Club. Write at the compiled CEFR level. Use a practical, dignity-preserving professional register. Keep scenarios workplace-relevant; apply LatAm / Mexico corporate sensitivity when local context appears.",
     "constraint_level": "MANDATORY",
     "prefer": [
       "professional workplace voice",

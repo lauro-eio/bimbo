@@ -74,6 +74,7 @@ class App(tk.Tk):
             default = prefer
 
         self.session_label_var = tk.StringVar(value=default)
+        self.level_var = tk.StringVar(value="b2")
         self.filter_var = tk.StringVar(value="")
         self.dry_run = tk.BooleanVar(value=False)
         self.no_validate = tk.BooleanVar(value=False)
@@ -101,8 +102,16 @@ class App(tk.Tk):
         )
         self.session_cb.grid(row=1, column=1, sticky=tk.EW, padx=6, pady=(8, 0))
 
+        ttk.Label(form, text="Level").grid(row=2, column=0, sticky=tk.W, pady=(8, 0))
+        ttk.Combobox(
+            form,
+            textvariable=self.level_var,
+            values=("b1", "b2", "c1"),
+            state="readonly",
+        ).grid(row=2, column=1, sticky=tk.W, padx=6, pady=(8, 0))
+
         opts = ttk.Frame(form)
-        opts.grid(row=2, column=1, sticky=tk.W, padx=6, pady=(8, 0))
+        opts.grid(row=3, column=1, sticky=tk.W, padx=6, pady=(8, 0))
         ttk.Checkbutton(opts, text="Generate dry-run (prompt only)", variable=self.dry_run).pack(
             side=tk.LEFT
         )
@@ -195,6 +204,9 @@ class App(tk.Tk):
         self.log.insert(tk.END, text)
         self.log.see(tk.END)
 
+    def _level(self) -> str:
+        return self.level_var.get().strip().lower() or "b2"
+
     def _require_session(self) -> str | None:
         sid = self._current_session_id()
         if not sid:
@@ -209,7 +221,7 @@ class App(tk.Tk):
         sid = self._require_session()
         if not sid:
             return
-        self._run([PYTHON, str(COMPILE), "--session", sid])
+        self._run([PYTHON, str(COMPILE), "--session", sid, "--level", self._level()])
 
     def generate_session(self) -> None:
         sid = self._require_session()
@@ -217,12 +229,12 @@ class App(tk.Tk):
             return
         if not self.dry_run.get() and not messagebox.askokcancel(
             "Generate",
-            f"Call Gemini for session {sid}?\n"
-            f"Writes content/{sid}.json\n"
+            f"Call Gemini for session {sid} at {self._level()}?\n"
+            f"Writes content/{self._level()}/{sid}.json\n"
             f"Topic: {self._current_topic()}",
         ):
             return
-        argv = [PYTHON, str(GENERATE), "--session", sid]
+        argv = [PYTHON, str(GENERATE), "--session", sid, "--level", self._level()]
         if self.dry_run.get():
             argv.append("--dry-run")
         if self.no_validate.get():
@@ -233,13 +245,15 @@ class App(tk.Tk):
         sid = self._require_session()
         if not sid:
             return
-        self._run([PYTHON, str(VALIDATE), "--content", "--session", sid])
+        self._run(
+            [PYTHON, str(VALIDATE), "--content", "--session", sid, "--level", self._level()]
+        )
 
     def render_session(self) -> None:
         sid = self._require_session()
         if not sid:
             return
-        self._run([PYTHON, str(RENDER), "--session", sid])
+        self._run([PYTHON, str(RENDER), "--session", sid, "--level", self._level()])
 
     def run_pipeline(self) -> None:
         sid = self._require_session()
@@ -255,18 +269,22 @@ class App(tk.Tk):
             "Run pipeline",
             f"Validate seeds → compile → generate → validate content → render\n"
             f"session: {sid}\n"
+            f"level: {self._level()}\n"
             f"Calls Gemini.",
         ):
             return
+        level = self._level()
         steps = [
             [PYTHON, str(VALIDATE)],
-            [PYTHON, str(COMPILE), "--session", sid],
-            [PYTHON, str(GENERATE), "--session", sid],
-            [PYTHON, str(VALIDATE), "--content", "--session", sid],
-            [PYTHON, str(RENDER), "--session", sid],
+            [PYTHON, str(COMPILE), "--session", sid, "--level", level],
+            [PYTHON, str(GENERATE), "--session", sid, "--level", level],
+            [PYTHON, str(VALIDATE), "--content", "--session", sid, "--level", level],
+            [PYTHON, str(RENDER), "--session", sid, "--level", level],
         ]
         if self.no_validate.get():
-            steps[2] = [PYTHON, str(GENERATE), "--session", sid, "--no-validate"]
+            steps[2] = [
+                PYTHON, str(GENERATE), "--session", sid, "--level", level, "--no-validate"
+            ]
         self._run_sequence(steps)
 
     def open_host(self) -> None:
@@ -279,7 +297,7 @@ class App(tk.Tk):
         sid = self._require_session()
         if not sid:
             return
-        path = PREVIEW / f"{sid}_{kind}.html"
+        path = PREVIEW / self._level() / f"{sid}_{kind}.html"
         if not path.is_file():
             messagebox.showerror("Missing preview", f"Not found:\n{path}\nRender first.")
             return

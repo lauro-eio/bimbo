@@ -1,6 +1,6 @@
 # B2027 — locked decisions
 
-Status: **locked** (updated 2026-10-26). Change only with an explicit unlock note here.
+Status: **locked** (updated 2026-10-28). Change only with an explicit unlock note here.
 
 Canonical client sources: [`source/bimbo-2027-program.md`](source/bimbo-2027-program.md), [`source/Club Session Roadmap - Club Session Roadmap.pdf`](source/Club%20Session%20Roadmap%20-%20Club%20Session%20Roadmap.pdf).
 
@@ -31,20 +31,26 @@ The title is not a live class count. The catalog may grow or shrink. A participa
 
 ## 2. Club stage map
 
-Single session type for every calendar entry. Stage codes are the factory contract; labels are host-facing.
+Single session type for every class. Stage codes are the factory contract; labels are host-facing. Order is locked:
 
-| # | Code | Host label | Job |
+`L-IN` → `OVW` → `ART` → `TL` → `Q3` → `FP` → `REF` → `FBDC`
+
+The scene and the phrases come before the controlled speaking task. The previous order (`TL` and `Q3` before `ART`, with the first three plan-sheet questions in `Q3` for every class) is retired.
+
+Class number picks the lesson model. Odd classes (`c001`, `c003`, …) are **role-play**. Even classes (`c002`, `c004`, …) are **game, then debate**. No riddle.
+
+| # | Code | Role-play (odd) | Debate (even) |
 | :---: | --- | --- | --- |
-| 1 | `L-IN` | Welcome to Class | Icebreaker; high energy |
-| 2 | `OVW` | Overview | Expectations + session map (facilitation; light generation) |
-| 3 | `TL` | Target Language | Introduce **3–5** idioms / vocabulary items |
-| 4 | `Q3` | 3 questions | First three plan-sheet questions (controlled activation) |
-| 5 | `ART` | Article Reading | Short article read aloud for shared context |
-| 6 | `FP` | The Rest of the Questions | Remaining plan-sheet questions; debate / opinion |
-| 7a | `REF` | Wrap — student reflection | Timed **1.5–2.0 min** per participant summary |
-| 7b | `FBDC` | Wrap — host delivery & upgrades | Anonymous delayed correction + expressive upgrades |
+| 1 | `L-IN` | Situation hook. 2–3 workplace questions. Not a game. | Topic game. A workplace speaking game on this topic, before the teach. |
+| 2 | `OVW` | Host-only map, in this order | Host-only map, in this order |
+| 3 | `ART` | The workplace scene the role-play will use | The workplace scene the debate will use |
+| 4 | `TL` | 3–5 phrases for the role-play | 3–5 phrases for the debate |
+| 5 | `Q3` | Role-play: roles, situation, outcome | Debate. First three plan-sheet questions, two sides |
+| 6 | `FP` | Short debrief of what the roles decided | General opinion. The remaining plan-sheet questions |
+| 7a | `REF` | Timed reflection for this level | Same |
+| 7b | `FBDC` | Anonymous delayed correction + expressive upgrades | Same |
 
-**Pedagogy frame:** tweaked CELTA **SK-PROD** (productive speaking). Article (`ART`) is the model input (not a listening dialogue). Grammar PPP/TTT stages are out of scope.
+**Pedagogy frame:** tweaked CELTA **SK-PROD** (productive speaking), Test-Teach-Test. Article (`ART`) is the model input (not a listening dialogue). Grammar PPP stages are out of scope. `lesson_model` is `roleplay` or `debate`, taken from the class number at compile.
 
 **Timer doctrine:** keep an on-screen stopwatch for each student speaking turn (especially `REF`).
 
@@ -60,7 +66,8 @@ Single session type for every calendar entry. Stage codes are the factory contra
 | Session index | `session_id` + `topic` (+ optional schedule `date` / `weekday` for calendar only) |
 | Upload / unit title | **`unit_title` = topic string** (exact list title) |
 | `session_title` | Same as `unit_title` / topic (required on generated session metadata) |
-| Paths | `content/{session_id}.json`, `preview/{session_id}_{host\|learner}.html` |
+| Paths | `content/{level}/{session_id}.json`, `preview/{level}/{session_id}_{host\|learner}.html` |
+| Levels | `b1`, `b2`, `c1`. Same class id in each folder. One level never overwrites another |
 
 Generation guardrail is the topic + `situational_brief` auto-from-topic — not weekday taxonomy.
 
@@ -68,16 +75,19 @@ Generation guardrail is the topic + `situational_brief` auto-from-topic — not 
 
 ## 4. CEFR / budgets
 
-| Field | Locked value |
-| --- | --- |
-| Operating CEFR | **B2** |
-| Lexis stretch | C1 allowed in `TL` and host **expressive upgrades** only |
-| Article (`ART`) | **120–220 words** (quick aloud paragraphs) |
-| Target language | **3–5** items per session |
-| Plan sheet | ≥ **6** questions total: first **3** → `Q3`; remainder → `FP` |
-| Reflection | **90–120 seconds** per student |
+Three passes of the same topic index. The class id does not change. The level is the folder and `cefr_level`.
 
-No A0–C2 book ladder. No per-book `max_text_word_count` matrix from GO2.
+| Level | Article | Reflection | Demand |
+| --- | --- | --- | --- |
+| **B1** | 80–140 words | 60–90 seconds | Short sentences, one clear choice, two roles or one plain debate point |
+| **B2** | 120–220 words | 90–120 seconds | Opinion, condition, and a short justification. The scene has a tradeoff |
+| **C1** | 160–260 words | 90–150 seconds | Judgment, implication, and stakeholder tension. Phrases stay exact |
+
+Shared across levels: target language **3–5** phrases. Plan sheet ≥ **6**. Role-play keeps the brief in `Q3` and a short debrief in `FP`. Debate puts the first **3** questions in `Q3` and the opinion questions in `FP`.
+
+Default level when a command omits `--level` is **B2**.
+
+No A0–C2 book ladder. No per-book `max_text_word_count` matrix from GO2. C1 is its own pass, not a stretch inside a B2 class.
 
 ---
 
@@ -135,9 +145,10 @@ Inspired by GO2 `file-layout.md`.
 | Tier | Git | Typical path |
 | --- | :---: | --- |
 | Contracts / docs / client source | Tracked | `LOCKS.md`, `AUTHORING.md`, `Seeds/`, schemas, prompts, `source/`, `notes/` |
-| Intermediate (compiled refs) | Ignored | `compiled/` |
-| Product (generated sessions) | Ignored | `content/` |
-| Preview HTML | Ignored | `preview/` |
+| Intermediate (compiled refs) | Ignored | `compiled/{b1\|b2\|c1}/` |
+| Product (generated sessions) | Ignored | `content/{b1\|b2\|c1}/` |
+| Preview HTML | Ignored | `preview/{b1\|b2\|c1}/` |
+| Published HTML | Tracked | `special-projects/Bimbo/site/bimbo-100/{b1\|b2\|c1}/` |
 | Media binaries / plans | Ignored | `media/` |
 
 **Rule:** regenerable from seeds + scripts does **not** belong in git. Do not keep parallel calendars at repo root.
@@ -162,8 +173,9 @@ SK-PROD remapped to Club stages. Learning text lives in materials, not only in `
 | Stage | Required / preferred materials |
 | --- | --- |
 | `ART` | `materials.reading_passage` with `passage_id`, content-only `title`, `body` |
-| `TL` | `vocabulary_items` and/or `column_banks` (2–4 titled columns) |
-| `Q3` / `FP` | Production briefs / discussion questions in `student_content` — **no fake MCQs** for open speaking |
+| `TL` | `column_banks` of **3–5** usable phrases (one or more banks) |
+| `Q3` | Role-play brief (roles, situation, outcome) or debate questions in `student_content` — **no fake MCQs** |
+| `FP` | Role-play debrief questions, or the remaining opinion questions |
 | `FBDC` | Host upgrades in `teacher_notes` (anonymous delayed correction + expressive paraphrases) |
 | `REF` | Timing cues (90–120s) in `teacher_notes`; learner prompt in `student_content` |
 
@@ -174,7 +186,7 @@ SK-PROD remapped to Club stages. Learning text lives in materials, not only in `
 | Field | Locked value |
 | --- | --- |
 | Per session | Short `situational_brief` derived from the **topic** |
-| `L-IN` | Must realize that brief (situation, stakes) — not a generic Club opener |
+| `L-IN` | Odd: situation hook from that brief. Even: a topic game that tests the same brief. Not a generic Club opener and not a riddle |
 | Validate | Flag near-duplicate openers across nearby sessions |
 
 Adapted from GO2 `lead_in_brief` / angle fidelity (no generic interchangeable warm-ups).
@@ -189,7 +201,7 @@ Do not treat a session as shippable without a green Club validate. Minimum gates
 - Dual titles on every stage
 - TL count **3–5** (prefer `column_banks` of usable phrases)
 - Article word count in **120–220**; form = decision vignette; no banned openers
-- Plan-sheet split: first **3** → `Q3`; remainder → `FP` (≥6 total)
+- Plan sheet ≥ 6. Role-play: `Q3` names roles and outcome; `FP` is a debrief question. Debate: first **3** questions in `Q3`; remainder in `FP`, and `FP` is general opinion
 - `REF` timing cues present (90–120s)
 - Audience guardrails honored
 - Materials shape respected (`ART` passage, no fake speaking MCQs)
@@ -223,10 +235,11 @@ Borrowed from GO2 SK-PROD speaking; Club stages unchanged.
 | `student_content` | Task prompts and questions only. No ceremony (“Welcome to today’s…”), no stage agenda maps, no “we will spend our time…” |
 | `teacher_notes` | Short procedure bullets (grouping, timing, what to listen for). Not a spoken host script or minute-by-minute monologue |
 | `OVW` | Host-only: `teacher_notes` = filled OVW template; `student_content` = exact string `HOST_ONLY` |
-| `L-IN` | 2–3 sharp situation questions from `situational_brief` — no lesson welcome |
-| `TL` | Prefer `column_banks` of usable phrases; avoid dictionary-definition paragraphs in `student_content` |
-| `ART` learner line | One short read-aloud prompt; full text only in `materials.reading_passage` |
-| `Q3` / `FP` | Questions (+ optional one-line stem). No coaching essays |
+| `L-IN` | Odd: 2–3 situation questions. Even: the topic game, and the learner line contains the word “game”. No lesson welcome and no riddle |
+| `TL` | 3–5 usable phrases in `column_banks`; avoid dictionary-definition paragraphs in `student_content` |
+| `ART` learner line | One short read-aloud prompt; full text only in `materials.reading_passage`. The scene is the one `Q3` will use |
+| `Q3` | Odd: roles, situation, and outcome. Even: the debate, including the first three plan-sheet questions |
+| `FP` | Odd: one or two debrief questions. Even: general opinion, including the remaining plan-sheet questions |
 
 Learner HTML may omit stages whose `student_content` is `HOST_ONLY`.
 

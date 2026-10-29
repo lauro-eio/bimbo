@@ -12,19 +12,11 @@ SEEDS = ROOT / "Seeds"
 PROMPTS = ROOT / "prompts"
 COMPILED = ROOT / "compiled"
 CONTENT = ROOT / "content"
-
-STAGE_HOST_LABELS: list[tuple[str, str]] = [
-    ("L-IN", "Welcome to Class"),
-    ("OVW", "Overview"),
-    ("TL", "Target Language"),
-    ("Q3", "3 questions"),
-    ("ART", "Article Reading"),
-    ("FP", "The Rest of the Questions"),
-    ("REF", "Wrap — student reflection"),
-    ("FBDC", "Wrap — host delivery & upgrades"),
-]
+PREVIEW = ROOT / "preview"
 
 NEW_SHAPE = "new-shape"
+CEFR_LEVELS = ("B1", "B2", "C1")
+DEFAULT_LEVEL = "B2"
 NEW_SHAPE_ORDER = ["L-IN", "OVW", "ART", "TL", "Q3", "FP", "REF", "FBDC"]
 NEW_SHAPE_LABELS: dict[str, list[tuple[str, str]]] = {
     "roleplay": [
@@ -62,12 +54,31 @@ def save_json(path: Path, payload: dict[str, Any]) -> None:
         fh.write("\n")
 
 
-def compiled_path(session_id: str) -> Path:
-    return COMPILED / f"{session_id}.json"
+def normalize_level(level: str | None) -> str:
+    chosen = (level or DEFAULT_LEVEL).strip().upper()
+    if chosen not in CEFR_LEVELS:
+        raise ValueError(f"level must be one of {', '.join(CEFR_LEVELS)}")
+    return chosen
 
 
-def content_path(session_id: str) -> Path:
-    return CONTENT / f"{session_id}.json"
+def level_slug(level: str | None) -> str:
+    return normalize_level(level).lower()
+
+
+def compiled_path(session_id: str, level: str | None = None) -> Path:
+    return COMPILED / level_slug(level) / f"{session_id}.json"
+
+
+def content_path(session_id: str, level: str | None = None) -> Path:
+    return CONTENT / level_slug(level) / f"{session_id}.json"
+
+
+def preview_paths(session_id: str, level: str | None = None) -> tuple[Path, Path]:
+    folder = PREVIEW / level_slug(level)
+    return (
+        folder / f"{session_id}_host.html",
+        folder / f"{session_id}_learner.html",
+    )
 
 
 def class_number(session_id: str) -> int:
@@ -101,7 +112,7 @@ def find_session(index: dict[str, Any], session_id: str) -> dict[str, Any]:
 def stage_roster_markdown(
     labels: list[tuple[str, str]] | None = None,
 ) -> str:
-    rows = labels if labels is not None else STAGE_HOST_LABELS
+    rows = labels if labels is not None else NEW_SHAPE_LABELS["roleplay"]
     lines = [
         f"{i}. **{code}** — {label}"
         for i, (code, label) in enumerate(rows, start=1)

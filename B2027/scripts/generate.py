@@ -20,9 +20,7 @@ from common import (
     ROOT,
     SEEDS,
     compiled_path,
-    compiled_shape_path,
     content_path,
-    content_shape_path,
     lesson_model_for,
     load_json,
     save_json,
@@ -81,18 +79,24 @@ _REF_TIMING = re.compile(
 )
 
 
-def ensure_ref_timing(session: dict[str, Any]) -> bool:
-    """REF host notes must carry the locked 90–120s cue."""
+def ensure_ref_timing(
+    session: dict[str, Any],
+    compiled_ref: dict[str, Any] | None = None,
+) -> bool:
+    """REF host notes must carry the level's stopwatch cue."""
     stages = session.get("stages")
     if not isinstance(stages, list):
         return False
+    budgets = (compiled_ref or {}).get("budgets") or {}
+    lo = budgets.get("reflection_seconds_min", 90)
+    hi = budgets.get("reflection_seconds_max", 120)
     for stage in stages:
         if not isinstance(stage, dict) or stage.get("stage_code") != "REF":
             continue
         notes = str(stage.get("teacher_notes") or "").rstrip()
         if _REF_TIMING.search(notes):
             return False
-        cue = "- Stopwatch on. Each student speaks 90–120 seconds."
+        cue = f"- Stopwatch on. Each student speaks {lo}–{hi} seconds."
         stage["teacher_notes"] = f"{notes}\n{cue}".strip()
         return True
     return False
@@ -182,18 +186,17 @@ def schema_validate_session(
 ) -> None:
     from validate import validate_session_dod
 
-    if shape != NEW_SHAPE:
-        schema = load_json(SEEDS / "session_output_schema.json")
-        errors = sorted(
-            Draft202012Validator(schema).iter_errors(session),
-            key=lambda e: list(e.path),
+    schema = load_json(SEEDS / "session_output_schema.json")
+    errors = sorted(
+        Draft202012Validator(schema).iter_errors(session),
+        key=lambda e: list(e.path),
+    )
+    if errors:
+        messages = "\n".join(
+            f"  - {'/'.join(str(p) for p in err.path) or '(root)'}: {err.message}"
+            for err in errors
         )
-        if errors:
-            messages = "\n".join(
-                f"  - {'/'.join(str(p) for p in err.path) or '(root)'}: {err.message}"
-                for err in errors
-            )
-            raise GenerateError(f"Session failed schema validation:\n{messages}")
+        raise GenerateError(f"Session failed schema validation:\n{messages}")
 
     config = load_json(SEEDS / "configuration.json")
     editorial = load_json(SEEDS / "editorial.json")
@@ -210,26 +213,22 @@ def build_repair_prompt(
     shape: str | None = None,
     lesson_model: str | None = None,
 ) -> str:
-    if shape == NEW_SHAPE:
-        if lesson_model == "roleplay":
-            task_rules = (
-                "- L-IN is situation questions, not a riddle and not a game.\n"
-                "- plan_sheet.questions still has at least 6 items.\n"
-                "- Q3 is the role-play: name the roles, the situation, and the outcome. "
-                "Do not paste plan-sheet questions into Q3.\n"
-                "- FP is one or two debrief questions and must include a question mark.\n"
-            )
-        else:
-            task_rules = (
-                "- L-IN student_content must contain the word game (a topic game).\n"
-                "- Q3 is the debate and must include the first three plan_sheet questions and the word debate or side.\n"
-                "- FP is general opinion and must include the word opinion plus the remaining plan_sheet questions.\n"
-            )
-        order = "L-IN, OVW, ART, TL, Q3, FP, REF, FBDC"
-        plan_rule = task_rules
+    if lesson_model == "debate":
+        task_rules = (
+            "- L-IN student_content must contain the word game (a topic game).\n"
+            "- Q3 is the debate and must include the first three plan_sheet questions and the word debate or side.\n"
+            "- FP is general opinion and must include the word opinion plus the remaining plan_sheet questions.\n"
+        )
     else:
-        order = "L-IN, OVW, TL, Q3, ART, FP, REF, FBDC"
-        plan_rule = "- plan_sheet.questions ≥ 6; first 3 in Q3, rest in FP.\n"
+        task_rules = (
+            "- L-IN is situation questions, not a riddle and not a game.\n"
+            "- plan_sheet.questions still has at least 6 items.\n"
+            "- Q3 is the role-play: name the roles, the situation, and the outcome. "
+            "Do not paste plan-sheet questions into Q3.\n"
+            "- FP is one or two debrief questions and must include a question mark.\n"
+        )
+    order = "L-IN, OVW, ART, TL, Q3, FP, REF, FBDC"
+    plan_rule = task_rules
     return (
         "You are fixing a B2027 Club session JSON so it passes schema + Club DoD. "
         "Keep pedagogy and topic.\n\n"
@@ -245,7 +244,7 @@ def build_repair_prompt(
         "overview, article, target language, lead-in, freer practice, wrap-up, "
         "Q3, FBDC, L-IN, OVW, ART, REF.\n"
         "- REF student_title example: Your takeaways (never Reflection).\n"
-        "- REF teacher_notes must include a 90–120 seconds stopwatch cue.\n"
+        "- REF teacher_notes must include a stopwatch cue for this level's reflection range.\n"
         "- ART = decision vignette (Show Don't Tell); no banned openers "
         "(In today's…, data-driven landscape, Welcome to today's…).\n"
         "- ART student_content = one short read-aloud line; body in reading_passage.\n"
@@ -275,6 +274,9 @@ def pin_session_identity(
         meta["topic"] = topic
         meta["unit_title"] = topic
         meta["session_title"] = topic
+    cefr = str((compiled_ref.get("pipeline_metadata") or {}).get("cefr_level") or "")
+    if cefr:
+        meta["cefr_level"] = cefr
     meta.pop("date", None)
     meta.pop("weekday", None)
     meta.pop("track", None)
@@ -300,13 +302,15 @@ def generate_one(
     do_validate: bool,
     out_path: Path | None,
     shape: str | None = None,
+    level: str | None = None,
 ) -> Path:
-    in_path = compiled_shape_path(session_id) if shape == NEW_SHAPE else compiled_path(session_id)
+    if shape == NEW_SHAPE:
+        print("Note: --shape new-shape is retired. Writing the level folder.", file=sys.stderr)
+    in_path = compiled_path(session_id, level)
     if not in_path.is_file():
         raise GenerateError(
             f"Compiled reference not found: {in_path}\n"
-            f"Run: python scripts/compile.py --session {session_id}"
-            + (" --shape new-shape" if shape == NEW_SHAPE else "")
+            f"Run: python scripts/compile.py --session {session_id} --level {level or 'b2'}"
         )
 
     compiled_ref = load_json(in_path)
@@ -315,10 +319,8 @@ def generate_one(
         raise GenerateError("Compiled reference missing pipeline_metadata.role_id")
 
     prompt = build_prompt(load_prompt(role_id), compiled_ref)
-    lesson_model = lesson_model_for(session_id) if shape == NEW_SHAPE else None
-    destination = out_path or (
-        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
-    )
+    lesson_model = lesson_model_for(session_id)
+    destination = out_path or content_path(session_id, level)
 
     if dry_run:
         print(prompt)
@@ -327,8 +329,7 @@ def generate_one(
     raw = call_gemini(prompt, model_name)
     session = parse_session_response(raw)
     pin_session_identity(session, session_id, compiled_ref)
-    if shape == NEW_SHAPE:
-        pin_ovw_map(session, compiled_ref)
+    pin_ovw_map(session, compiled_ref)
     title_fixes = scrub_student_title_jargon(session)
     if title_fixes:
         print(
@@ -336,8 +337,8 @@ def generate_one(
             + "\n    ".join(title_fixes),
             file=sys.stderr,
         )
-    if ensure_ref_timing(session):
-        print("  Added REF 90–120s timing cue", file=sys.stderr)
+    if ensure_ref_timing(session, compiled_ref):
+        print("  Added REF stopwatch cue", file=sys.stderr)
 
     if do_validate:
         try:
@@ -355,8 +356,7 @@ def generate_one(
             )
             session = parse_session_response(repair_raw)
             pin_session_identity(session, session_id, compiled_ref)
-            if shape == NEW_SHAPE:
-                pin_ovw_map(session, compiled_ref)
+            pin_ovw_map(session, compiled_ref)
             title_fixes = scrub_student_title_jargon(session)
             if title_fixes:
                 print(
@@ -364,8 +364,8 @@ def generate_one(
                     + "\n    ".join(title_fixes),
                     file=sys.stderr,
                 )
-            if ensure_ref_timing(session):
-                print("  Added REF 90–120s timing cue after repair", file=sys.stderr)
+            if ensure_ref_timing(session, compiled_ref):
+                print("  Added REF stopwatch cue after repair", file=sys.stderr)
             try:
                 schema_validate_session(session, shape=shape, lesson_model=lesson_model)
                 print(f"  Repair PASS for {session_id}", file=sys.stderr)
@@ -383,9 +383,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate a B2027 Club session")
     parser.add_argument("--session", required=True, help="session_id (c001–c100)")
     parser.add_argument(
+        "--level",
+        default="b2",
+        choices=["b1", "b2", "c1"],
+        help="CEFR folder (default b2)",
+    )
+    parser.add_argument(
         "--shape",
         choices=[NEW_SHAPE],
-        help="Read compiled/{session}_new-shape.json and write content/{session}_new-shape.json",
+        help="Retired. The level folder is the path. Accepted so older commands still run.",
     )
     parser.add_argument(
         "--model",
@@ -413,6 +419,7 @@ def main(argv: list[str] | None = None) -> int:
             do_validate=not args.no_validate,
             out_path=args.output,
             shape=args.shape,
+            level=args.level,
         )
     except GenerateError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

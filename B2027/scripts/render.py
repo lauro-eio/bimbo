@@ -11,18 +11,15 @@ from pathlib import Path
 from typing import Any
 
 from common import (
-    CONTENT,
     NEW_SHAPE,
     ROOT,
     SEEDS,
     content_path,
-    content_shape_path,
     find_session,
     load_json,
-    shape_stem,
+    normalize_level,
+    preview_paths,
 )
-
-PREVIEW = ROOT / "preview"
 
 
 class RenderError(Exception):
@@ -330,6 +327,7 @@ def resolve_content_file(
     session_id: str | None,
     path: Path | None,
     shape: str | None = None,
+    level: str | None = None,
 ) -> Path:
     if path:
         return path
@@ -337,27 +335,12 @@ def resolve_content_file(
         raise RenderError("pass --session or --file")
     index = load_json(SEEDS / "session_index.json")
     find_session(index, session_id)
-    preferred = (
-        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
-    )
+    if shape == NEW_SHAPE:
+        print("Note: --shape new-shape is retired. Reading the level folder.", file=sys.stderr)
+    preferred = content_path(session_id, level)
     if preferred.is_file():
         return preferred
-    legacy = sorted(CONTENT.glob(f"{session_id}_*.json"))
-    if legacy:
-        return legacy[0]
     raise RenderError(f"Content not found: {preferred}. Generate first.")
-
-
-def preview_paths(
-    session: dict[str, Any],
-    session_id: str,
-    shape: str | None = None,
-) -> tuple[Path, Path]:
-    stem = shape_stem(session_id) if shape == NEW_SHAPE else session_id
-    return (
-        PREVIEW / f"{stem}_host.html",
-        PREVIEW / f"{stem}_learner.html",
-    )
 
 
 def write_text(path: Path, text: str) -> None:
@@ -370,14 +353,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--session", help="session_id (c001–c100)")
     parser.add_argument("--file", type=Path, help="Explicit content JSON path")
     parser.add_argument(
+        "--level",
+        default="b2",
+        choices=["b1", "b2", "c1"],
+        help="CEFR folder (default b2). Writes preview/{level}/{session}_{host,learner}.html",
+    )
+    parser.add_argument(
         "--shape",
         choices=[NEW_SHAPE],
-        help="Render preview/{session}_new-shape_{host,learner}.html",
+        help="Retired. The level folder is the path. Accepted so older commands still run.",
     )
     args = parser.parse_args(argv)
 
     try:
-        content_file = resolve_content_file(args.session, args.file, args.shape)
+        content_file = resolve_content_file(args.session, args.file, args.shape, args.level)
     except (RenderError, KeyError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
@@ -389,7 +378,8 @@ def main(argv: list[str] | None = None) -> int:
 
     meta = session.get("session_metadata") or {}
     session_id = str(meta.get("session_id") or args.session or content_file.stem)
-    host_path, learner_path = preview_paths(session, session_id, args.shape)
+    level = str(meta.get("cefr_level") or args.level)
+    host_path, learner_path = preview_paths(session_id, level)
 
     write_text(host_path, render_host_page(session))
     write_text(learner_path, render_learner_page(session))

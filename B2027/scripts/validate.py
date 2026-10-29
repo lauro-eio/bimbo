@@ -12,15 +12,13 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from common import (
-    CONTENT,
     NEW_SHAPE,
-    NEW_SHAPE_ORDER,
     SEEDS,
     content_path,
-    content_shape_path,
     find_session,
     lesson_model_for,
     load_json,
+    normalize_level,
 )
 
 SEED_VALIDATIONS: list[tuple[Path, Path]] = [
@@ -30,7 +28,7 @@ SEED_VALIDATIONS: list[tuple[Path, Path]] = [
     (SEEDS / "editorial.json", SEEDS / "editorial_schema.json"),
 ]
 
-STAGE_ORDER = ["L-IN", "OVW", "TL", "Q3", "ART", "FP", "REF", "FBDC"]
+STAGE_ORDER = ["L-IN", "OVW", "ART", "TL", "Q3", "FP", "REF", "FBDC"]
 HOST_ONLY = "HOST_ONLY"
 
 JARGON = re.compile(
@@ -93,6 +91,15 @@ def find_banned(text: str, phrases: list[str]) -> list[str]:
     return hits
 
 
+def budgets_for(config: dict[str, Any], session: dict[str, Any]) -> dict[str, Any]:
+    level = str((session.get("session_metadata") or {}).get("cefr_level") or "")
+    spec = (config.get("levels") or {}).get(level) or {}
+    budgets = spec.get("budgets")
+    if isinstance(budgets, dict):
+        return budgets
+    raise KeyError(f"no budgets for cefr_level {level!r}")
+
+
 def validate_session_dod(
     session: dict[str, Any],
     config: dict[str, Any],
@@ -101,20 +108,22 @@ def validate_session_dod(
     lesson_model: str | None = None,
 ) -> list[str]:
     messages: list[str] = []
-    budgets = config["budgets"]
+    try:
+        budgets = budgets_for(config, session)
+    except KeyError as exc:
+        return [f"  - {exc}"]
     banned = list(editorial.get("banned_phrases") or [])
 
-    if shape != NEW_SHAPE:
-        schema = load_json(SEEDS / "session_output_schema.json")
-        errors = sorted(
-            Draft202012Validator(schema).iter_errors(session),
-            key=lambda e: list(e.path),
+    schema = load_json(SEEDS / "session_output_schema.json")
+    errors = sorted(
+        Draft202012Validator(schema).iter_errors(session),
+        key=lambda e: list(e.path),
+    )
+    if errors:
+        messages.extend(
+            f"  - schema {'/'.join(str(p) for p in e.path) or '(root)'}: {e.message}"
+            for e in errors
         )
-        if errors:
-            messages.extend(
-                f"  - schema {'/'.join(str(p) for p in e.path) or '(root)'}: {e.message}"
-                for e in errors
-            )
 
     meta = session.get("session_metadata") or {}
     topic = str(meta.get("topic") or "").strip()
@@ -140,7 +149,7 @@ def validate_session_dod(
         messages.append("  - stages: expected exactly 8 stage objects")
     else:
         codes = [s.get("stage_code") for s in stages if isinstance(s, dict)]
-        expected = NEW_SHAPE_ORDER if shape == NEW_SHAPE else STAGE_ORDER
+        expected = STAGE_ORDER
         if codes != expected:
             messages.append(f"  - stages: order must be {expected}; got {codes}")
 
@@ -258,55 +267,43 @@ def validate_session_dod(
 
     q3 = stage_by_code(session, "Q3")
     fp = stage_by_code(session, "FP")
-    if shape == NEW_SHAPE:
-        q3_text = str((q3 or {}).get("student_content") or "")
-        fp_text = str((fp or {}).get("student_content") or "")
-        lin_text = str((lin.get("student_content") if lin else "") or "")
-        if lesson_model == "roleplay":
-            if "riddle" in lin_text.lower():
-                messages.append("  - L-IN: riddle is not used in new-shape")
-            lower_q3 = q3_text.lower()
-            if "role" not in lower_q3 or "outcome" not in lower_q3:
+    q3_text = str((q3 or {}).get("student_content") or "")
+    fp_text = str((fp or {}).get("student_content") or "")
+    lin_text = str((lin.get("student_content") if lin else "") or "")
+    if not lesson_model:
+        sid = str((session.get("session_metadata") or {}).get("session_id") or "")
+        if sid.startswith("c"):
+            lesson_model = lesson_model_for(sid)
+    if lesson_model == "roleplay":
+        if "riddle" in lin_text.lower():
+            messages.append("  - L-IN: riddle is not used")
+        lower_q3 = q3_text.lower()
+        if "role" not in lower_q3 or "outcome" not in lower_q3:
+            messages.append(
+                "  - Q3 role-play must name the roles and the outcome"
+            )
+        if "?" not in fp_text:
+            messages.append("  - FP role-play debrief needs a question")
+    elif lesson_model == "debate":
+        if "game" not in lin_text.lower():
+            messages.append("  - L-IN must be a topic game")
+        if "debate" not in q3_text.lower() and "side" not in q3_text.lower():
+            messages.append("  - Q3 must be a debate with sides")
+        if "opinion" not in fp_text.lower():
+            messages.append("  - FP must be general opinion")
+        if isinstance(questions, list) and len(questions) >= 3 and q3 and fp:
+            missing_q3 = [q for q in questions[:3] if q not in q3_text]
+            missing_fp = [q for q in questions[3:] if q not in fp_text]
+            if missing_q3:
                 messages.append(
-                    "  - Q3 role-play must name the roles and the outcome"
+                    f"  - Q3 student_content missing plan_sheet questions: {missing_q3!r}"
                 )
-            if "?" not in fp_text:
-                messages.append("  - FP role-play debrief needs a question")
-        elif lesson_model == "debate":
-            if "game" not in lin_text.lower():
-                messages.append("  - L-IN debate model must be a topic game")
-            if "debate" not in q3_text.lower() and "side" not in q3_text.lower():
-                messages.append("  - Q3 must be a debate with sides")
-            if "opinion" not in fp_text.lower():
-                messages.append("  - FP must be general opinion")
-            if isinstance(questions, list) and len(questions) >= 3 and q3 and fp:
-                missing_q3 = [q for q in questions[:3] if q not in q3_text]
-                missing_fp = [q for q in questions[3:] if q not in fp_text]
-                if missing_q3:
-                    messages.append(
-                        f"  - Q3 student_content missing plan_sheet questions: {missing_q3!r}"
-                    )
-                if missing_fp:
-                    messages.append(
-                        f"  - FP student_content missing plan_sheet questions: {missing_fp!r}"
-                    )
-        else:
-            messages.append("  - new-shape requires lesson_model roleplay or debate")
-        return messages
-
-    if isinstance(questions, list) and len(questions) >= 3 and q3 and fp:
-        q3_text = str(q3.get("student_content") or "")
-        fp_text = str(fp.get("student_content") or "")
-        missing_q3 = [q for q in questions[:3] if q not in q3_text]
-        missing_fp = [q for q in questions[3:] if q not in fp_text]
-        if missing_q3:
-            messages.append(
-                f"  - Q3 student_content missing plan_sheet questions: {missing_q3!r}"
-            )
-        if missing_fp:
-            messages.append(
-                f"  - FP student_content missing plan_sheet questions: {missing_fp!r}"
-            )
+            if missing_fp:
+                messages.append(
+                    f"  - FP student_content missing plan_sheet questions: {missing_fp!r}"
+                )
+    else:
+        messages.append("  - lesson_model must be roleplay or debate")
 
     return messages
 
@@ -315,6 +312,7 @@ def resolve_content_file(
     session_id: str | None,
     path: Path | None,
     shape: str | None = None,
+    level: str | None = None,
 ) -> Path:
     if path:
         return path
@@ -323,15 +321,9 @@ def resolve_content_file(
     # Confirm session exists in index
     index = load_json(SEEDS / "session_index.json")
     find_session(index, session_id)
-    preferred = (
-        content_shape_path(session_id) if shape == NEW_SHAPE else content_path(session_id)
-    )
-    if preferred.is_file():
-        return preferred
-    legacy = sorted(CONTENT.glob(f"{session_id}_*.json"))
-    if legacy:
-        return legacy[0]
-    return preferred
+    if shape == NEW_SHAPE:
+        print("Note: --shape new-shape is retired. Reading the level folder.", file=sys.stderr)
+    return content_path(session_id, level)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -342,6 +334,12 @@ def main(argv: list[str] | None = None) -> int:
         help="Also validate a generated session (Club DoD)",
     )
     parser.add_argument("--session", help="session_id for --content")
+    parser.add_argument(
+        "--level",
+        default="b2",
+        choices=["b1", "b2", "c1"],
+        help="CEFR folder for --content (default b2)",
+    )
     parser.add_argument(
         "--shape",
         choices=[NEW_SHAPE],
@@ -370,12 +368,15 @@ def main(argv: list[str] | None = None) -> int:
     # Budget sanity (mins ≤ maxes) not fully expressible in schema alone
     config = load_json(SEEDS / "configuration.json")
     editorial = load_json(SEEDS / "editorial.json")
-    b = config["budgets"]
-    budget_ok = (
-        b["article_word_min"] <= b["article_word_max"]
-        and b["tl_item_min"] <= b["tl_item_max"]
-        and b["reflection_seconds_min"] <= b["reflection_seconds_max"]
-    )
+    budget_ok = True
+    for spec in (config.get("levels") or {}).values():
+        b = spec.get("budgets") or {}
+        if not (
+            b.get("article_word_min", 1) <= b.get("article_word_max", 0)
+            and b.get("tl_item_min", 1) <= b.get("tl_item_max", 0)
+            and b.get("reflection_seconds_min", 1) <= b.get("reflection_seconds_max", 0)
+        ):
+            budget_ok = False
     if budget_ok:
         print("  PASS configuration budgets (min ≤ max)")
     else:
@@ -385,7 +386,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.content:
         print("Content")
         try:
-            content_file = resolve_content_file(args.session, args.file, args.shape)
+            content_file = resolve_content_file(
+                args.session, args.file, args.shape, args.level
+            )
         except (KeyError, ValueError) as exc:
             print(f"  FAIL {exc}")
             return 1
@@ -393,10 +396,13 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  FAIL missing file: {content_file}")
             return 1
         session = load_json(content_file)
-        lesson_model = None
-        if args.shape == NEW_SHAPE:
-            sid = str((session.get("session_metadata") or {}).get("session_id") or args.session or "")
-            lesson_model = lesson_model_for(sid) if sid.startswith("c") else None
+        expected = normalize_level(args.level)
+        got = str((session.get("session_metadata") or {}).get("cefr_level") or "")
+        if got != expected:
+            print(f"  FAIL {content_file.name} is {got or 'missing a level'}, expected {expected}")
+            return 1
+        sid = str((session.get("session_metadata") or {}).get("session_id") or args.session or "")
+        lesson_model = lesson_model_for(sid) if sid.startswith("c") else None
         messages = validate_session_dod(
             session,
             config,

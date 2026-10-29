@@ -31,7 +31,7 @@
           "type": "string",
           "pattern": "^c(00[1-9]|0[1-9][0-9]|100)$"
         },
-        "cefr_level": { "type": "string", "const": "B2" },
+        "cefr_level": { "type": "string", "enum": ["B1", "B2", "C1"] },
         "role_id": {
           "type": "string",
           "const": "CLUB_SK_PROD_SPEAKING"
@@ -66,7 +66,8 @@
       "required": [
         "topic",
         "unit_title",
-        "situational_brief"
+        "situational_brief",
+        "level_demand"
       ],
       "properties": {
         "topic": { "type": "string", "minLength": 1 },
@@ -79,6 +80,11 @@
           "type": "string",
           "minLength": 1,
           "description": "Auto-derived from topic at compile (LOCKS §13)."
+        },
+        "level_demand": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How this CEFR level must sound. From configuration.levels."
         }
       }
     },
@@ -105,11 +111,15 @@
     "framework_runtime": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["framework_name", "ordered_stages"],
+      "required": ["framework_name", "ordered_stages", "lesson_model"],
       "properties": {
         "framework_name": {
           "type": "string",
           "const": "CLUB-SK-PROD"
+        },
+        "lesson_model": {
+          "type": "string",
+          "enum": ["roleplay", "debate"]
         },
         "ordered_stages": {
           "type": "array",
@@ -118,9 +128,9 @@
           "prefixItems": [
             { "const": "L-IN" },
             { "const": "OVW" },
+            { "const": "ART" },
             { "const": "TL" },
             { "const": "Q3" },
-            { "const": "ART" },
             { "const": "FP" },
             { "const": "REF" },
             { "const": "FBDC" }
