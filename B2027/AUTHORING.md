@@ -43,7 +43,7 @@ python scripts/render.py --session c001 --level b2
 2. Compile one session reference (`compiled/{session_id}.json`) — auto `situational_brief`, OVW from template.
 3. Generate with role prompt `prompts/CLUB_SK_PROD_SPEAKING.md` → `content/{session_id}.json`.
 4. Validate Club DoD (`scripts/validate.py --content`) — stop on red before render.
-5. Render local host + learner HTML → `preview/{session_id}_host.html` and `_learner.html`.
+5. Render host + learner HTML → `site/bimbo-100/{level}/{session_id}_host.html` and `_learner.html`.
 
 V1 defaults: article generated from topic; `situational_brief` auto; `OVW` from template; `unit_title` = topic.
 

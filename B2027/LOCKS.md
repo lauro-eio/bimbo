@@ -66,7 +66,7 @@ Class number picks the lesson model. Odd classes (`c001`, `c003`, …) are **rol
 | Session index | `session_id` + `topic` (+ optional schedule `date` / `weekday` for calendar only) |
 | Upload / unit title | **`unit_title` = topic string** (exact list title) |
 | `session_title` | Same as `unit_title` / topic (required on generated session metadata) |
-| Paths | `content/{level}/{session_id}.json`, `preview/{level}/{session_id}_{host\|learner}.html` |
+| Paths | `content/{level}/{session_id}.json`, `site/bimbo-100/{level}/{session_id}_{host\|learner}.html` |
 | Levels | `b1`, `b2`, `c1`. Same class id in each folder. One level never overwrites another |
 
 Generation guardrail is the topic + `situational_brief` auto-from-topic — not weekday taxonomy.
@@ -147,8 +147,7 @@ Inspired by GO2 `file-layout.md`.
 | Contracts / docs / client source | Tracked | `LOCKS.md`, `AUTHORING.md`, `Seeds/`, schemas, prompts, `source/`, `notes/` |
 | Intermediate (compiled refs) | Ignored | `compiled/{b1\|b2\|c1}/` |
 | Product (generated sessions) | Ignored | `content/{b1\|b2\|c1}/` |
-| Preview HTML | Ignored | `preview/{b1\|b2\|c1}/` |
-| Published HTML | Tracked | `special-projects/Bimbo/site/bimbo-100/{b1\|b2\|c1}/` |
+| Published HTML | Tracked | `site/bimbo-100/{b1\|b2\|c1}/`. Render writes this path. There is no preview copy. |
 | Media binaries / plans | Ignored | `media/` |
 
 **Rule:** regenerable from seeds + scripts does **not** belong in git. Do not keep parallel calendars at repo root.

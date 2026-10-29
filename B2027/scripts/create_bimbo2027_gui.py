@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = Path(__file__).resolve().parent
 SEEDS = ROOT / "Seeds"
 CONTENT = ROOT / "content"
-PREVIEW = ROOT / "preview"
+SITE_HTML = ROOT.parent / "site" / "bimbo-100"
 INDEX = SEEDS / "session_index.json"
 
 VALIDATE = SCRIPTS / "validate.py"
@@ -297,9 +297,9 @@ class App(tk.Tk):
         sid = self._require_session()
         if not sid:
             return
-        path = PREVIEW / self._level() / f"{sid}_{kind}.html"
+        path = SITE_HTML / self._level() / f"{sid}_{kind}.html"
         if not path.is_file():
-            messagebox.showerror("Missing preview", f"Not found:\n{path}\nRender first.")
+            messagebox.showerror("Missing page", f"Not found:\n{path}\nRender first.")
             return
         webbrowser.open(path.resolve().as_uri())
 

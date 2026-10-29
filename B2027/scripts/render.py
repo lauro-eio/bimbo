@@ -18,7 +18,7 @@ from common import (
     find_session,
     load_json,
     normalize_level,
-    preview_paths,
+    site_paths,
 )
 
 
@@ -167,7 +167,15 @@ def render_stage_learner(stage: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
-def page_shell(title: str, body: str, view: str) -> str:
+def site_nav(session_id: str, view: str, program: str) -> str:
+    other = "learner" if view == "host" else "host"
+    return (
+        f'<nav class="site-nav"><a href="../index.html">{escape(program)}</a>'
+        f'<a href="{escape(session_id)}_{other}.html">{other.title()}</a></nav>'
+    )
+
+
+def page_shell(title: str, body: str, view: str, nav: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -248,9 +256,12 @@ def page_shell(title: str, body: str, view: str) -> str:
     ul {{ margin: 0.35rem 0 0.75rem; padding-left: 1.25rem; }}
     p {{ margin: 0 0 0.65rem; }}
     a {{ color: var(--host); }}
+    .site-nav {{ font-family: system-ui, sans-serif; font-size: 0.85rem; margin: 0 0 1rem; }}
+    .site-nav a {{ margin-right: 0.85rem; }}
   </style>
 </head>
 <body class="view-{escape(view)}">
+{nav}
 {body}
 </body>
 </html>
@@ -297,7 +308,13 @@ def render_host_page(session: dict[str, Any]) -> str:
     for stage in stages:
         if isinstance(stage, dict):
             body_parts.append(render_stage_host(stage))
-    return page_shell(f"{program} · Host · {title}", "\n".join(body_parts), "host")
+    sid = str(meta.get("session_id") or "")
+    return page_shell(
+        f"{program} · Host · {title}",
+        "\n".join(body_parts),
+        "host",
+        site_nav(sid, "host", program),
+    )
 
 
 def render_learner_page(session: dict[str, Any]) -> str:
@@ -320,7 +337,13 @@ def render_learner_page(session: dict[str, Any]) -> str:
         if str(stage.get("student_content") or "").strip() == "HOST_ONLY":
             continue
         body_parts.append(render_stage_learner(stage))
-    return page_shell(f"{program} · Learner · {title}", "\n".join(body_parts), "learner")
+    sid = str(meta.get("session_id") or "")
+    return page_shell(
+        f"{program} · Learner · {title}",
+        "\n".join(body_parts),
+        "learner",
+        site_nav(sid, "learner", program),
+    )
 
 
 def resolve_content_file(
@@ -356,7 +379,7 @@ def main(argv: list[str] | None = None) -> int:
         "--level",
         default="b2",
         choices=["b1", "b2", "c1"],
-        help="CEFR folder (default b2). Writes preview/{level}/{session}_{host,learner}.html",
+        help="CEFR folder (default b2). Writes site/bimbo-100/{level}/{session}_{host,learner}.html",
     )
     parser.add_argument(
         "--shape",
@@ -379,13 +402,13 @@ def main(argv: list[str] | None = None) -> int:
     meta = session.get("session_metadata") or {}
     session_id = str(meta.get("session_id") or args.session or content_file.stem)
     level = str(meta.get("cefr_level") or args.level)
-    host_path, learner_path = preview_paths(session_id, level)
+    host_path, learner_path = site_paths(session_id, level)
 
     write_text(host_path, render_host_page(session))
     write_text(learner_path, render_learner_page(session))
 
-    print(f"Wrote {host_path.relative_to(ROOT)}")
-    print(f"Wrote {learner_path.relative_to(ROOT)}")
+    print(f"Wrote {host_path.relative_to(ROOT.parent)}")
+    print(f"Wrote {learner_path.relative_to(ROOT.parent)}")
     return 0
 
 

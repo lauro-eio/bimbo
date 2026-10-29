@@ -12,7 +12,7 @@ SEEDS = ROOT / "Seeds"
 PROMPTS = ROOT / "prompts"
 COMPILED = ROOT / "compiled"
 CONTENT = ROOT / "content"
-PREVIEW = ROOT / "preview"
+SITE_HTML = ROOT.parent / "site" / "bimbo-100"
 
 NEW_SHAPE = "new-shape"
 CEFR_LEVELS = ("B1", "B2", "C1")
@@ -73,12 +73,18 @@ def content_path(session_id: str, level: str | None = None) -> Path:
     return CONTENT / level_slug(level) / f"{session_id}.json"
 
 
-def preview_paths(session_id: str, level: str | None = None) -> tuple[Path, Path]:
-    folder = PREVIEW / level_slug(level)
+def site_paths(session_id: str, level: str | None = None) -> tuple[Path, Path]:
+    """Published host and learner pages. Render writes these directly."""
+    folder = SITE_HTML / level_slug(level)
     return (
         folder / f"{session_id}_host.html",
         folder / f"{session_id}_learner.html",
     )
+
+
+def preview_paths(session_id: str, level: str | None = None) -> tuple[Path, Path]:
+    """Retired name. Returns the site paths."""
+    return site_paths(session_id, level)
 
 
 def class_number(session_id: str) -> int:

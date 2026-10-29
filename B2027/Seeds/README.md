@@ -18,7 +18,7 @@ Factory contracts for Club sessions. Policy: [`../LOCKS.md`](../LOCKS.md).
 
 No grammar registry. No GO2 book ladder. No weekday tracks.
 
-**Pipeline:** `scripts/compile.py` → `compiled/` · `scripts/generate.py` → `content/` · `scripts/validate.py` · `scripts/render.py` → `preview/`. See [`../AUTHORING.md`](../AUTHORING.md).
+**Pipeline:** `scripts/compile.py` → `compiled/` · `scripts/generate.py` → `content/` · `scripts/validate.py` · `scripts/render.py` → `site/bimbo-100/{level}/`. See [`../AUTHORING.md`](../AUTHORING.md).
 
 **Pipeline contracts:** compile emits JSON matching `compiled_session_reference_schema.json`; generate emits JSON matching `session_output_schema.json` (`plan_sheet` ≥6 questions; 8 Club stages in order; ART `reading_passage` + `passage_id`; TL vocab/column banks; no `tasks[]` / fake MCQs; `unit_title` = `session_title` = topic).
 
