@@ -5,5 +5,6 @@ __pycache__/
 compiled/
 content/
 preview/
+archive/
 media/
 var/
