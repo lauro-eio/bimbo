@@ -72,33 +72,37 @@ def scrub_student_title_jargon(session: dict[str, Any]) -> list[str]:
     return fixes
 
 
-_REF_TIMING = re.compile(
-    r"(90|120|1\.5|2(\.0)?)\s*(s|sec|secs|second|seconds|min|mins|minute|minutes)"
-    r"|timed\s+reflection|stopwatch",
-    re.I,
-)
+def _has_number(text: str, number: int) -> bool:
+    return re.search(rf"(?<!\d){number}(?!\d)", text) is not None
 
 
 def ensure_ref_timing(
     session: dict[str, Any],
     compiled_ref: dict[str, Any] | None = None,
 ) -> bool:
-    """REF host notes must carry the level's stopwatch cue."""
+    """REF notes and the learner line must state this level's full range."""
     stages = session.get("stages")
     if not isinstance(stages, list):
         return False
     budgets = (compiled_ref or {}).get("budgets") or {}
-    lo = budgets.get("reflection_seconds_min", 90)
-    hi = budgets.get("reflection_seconds_max", 120)
+    lo = int(budgets.get("reflection_seconds_min", 90))
+    hi = int(budgets.get("reflection_seconds_max", 120))
+    changed = False
     for stage in stages:
         if not isinstance(stage, dict) or stage.get("stage_code") != "REF":
             continue
         notes = str(stage.get("teacher_notes") or "").rstrip()
-        if _REF_TIMING.search(notes):
-            return False
-        cue = f"- Stopwatch on. Each student speaks {lo}–{hi} seconds."
-        stage["teacher_notes"] = f"{notes}\n{cue}".strip()
-        return True
+        if not (_has_number(notes, lo) and _has_number(notes, hi)):
+            cue = f"- Stopwatch on. Each student speaks {lo}–{hi} seconds."
+            stage["teacher_notes"] = f"{notes}\n{cue}".strip()
+            changed = True
+        student = str(stage.get("student_content") or "").rstrip()
+        if student and student != "HOST_ONLY" and not (
+            _has_number(student, lo) and _has_number(student, hi)
+        ):
+            stage["student_content"] = f"{student} Speak for {lo}–{hi} seconds.".strip()
+            changed = True
+        return changed
     return False
 
 
@@ -208,10 +212,11 @@ def schema_validate_session(
 
 
 def build_repair_prompt(
-    session: dict[str, Any],
+    session: dict[str, Any] | None,
     validation_error: str,
     shape: str | None = None,
     lesson_model: str | None = None,
+    source_text: str | None = None,
 ) -> str:
     if lesson_model == "debate":
         task_rules = (
@@ -223,7 +228,7 @@ def build_repair_prompt(
         task_rules = (
             "- L-IN is situation questions, not a riddle and not a game.\n"
             "- plan_sheet.questions still has at least 6 items.\n"
-            "- Q3 is the role-play: name the roles, the situation, and the outcome. "
+            "- Q3 student_content must contain the words role and outcome, and name the situation. "
             "Do not paste plan-sheet questions into Q3.\n"
             "- FP is one or two debrief questions and must include a question mark.\n"
         )
@@ -245,15 +250,24 @@ def build_repair_prompt(
         "Q3, FBDC, L-IN, OVW, ART, REF.\n"
         "- REF student_title example: Your takeaways (never Reflection).\n"
         "- REF teacher_notes must include a stopwatch cue for this level's reflection range.\n"
+        "- REF student_content must state both ends of that range, not one number inside it.\n"
         "- ART = decision vignette (Show Don't Tell); no banned openers "
         "(In today's…, data-driven landscape, Welcome to today's…).\n"
+        "- ART reading_passage.body must fall inside the article word range in the validation error. "
+        "A count below the minimum means lengthen the vignette. Do not shorten a short article.\n"
         "- ART student_content = one short read-aloud line; body in reading_passage.\n"
         "- TL prefer column_banks; short student prompt.\n"
         f"{plan_rule}"
         "- No materials.tasks / no MCQs.\n"
         "- Return ONLY valid JSON (no markdown fences).\n\n"
         f"Validation errors:\n{validation_error}\n\n"
-        f"Current JSON:\n{json.dumps(session, indent=2, ensure_ascii=False)}\n"
+        "Current JSON:\n"
+        + (
+            source_text
+            if source_text is not None
+            else json.dumps(session or {}, indent=2, ensure_ascii=False)
+        )
+        + "\n"
     )
 
 
@@ -327,45 +341,58 @@ def generate_one(
         return destination
 
     raw = call_gemini(prompt, model_name)
-    session = parse_session_response(raw)
-    pin_session_identity(session, session_id, compiled_ref)
-    pin_ovw_map(session, compiled_ref)
-    title_fixes = scrub_student_title_jargon(session)
-    if title_fixes:
-        print(
-            "  Scrubbed student_title jargon:\n    "
-            + "\n    ".join(title_fixes),
-            file=sys.stderr,
-        )
-    if ensure_ref_timing(session, compiled_ref):
-        print("  Added REF stopwatch cue", file=sys.stderr)
+    session: dict[str, Any] | None = None
+    parse_error: GenerateError | None = None
+    try:
+        session = parse_session_response(raw)
+    except GenerateError as exc:
+        parse_error = exc
+
+    def prepare(current: dict[str, Any], label: str) -> None:
+        pin_session_identity(current, session_id, compiled_ref)
+        pin_ovw_map(current, compiled_ref)
+        title_fixes = scrub_student_title_jargon(current)
+        if title_fixes:
+            print(
+                f"  Scrubbed student_title jargon{label}:\n    "
+                + "\n    ".join(title_fixes),
+                file=sys.stderr,
+            )
+        if ensure_ref_timing(current, compiled_ref):
+            print(f"  Added REF stopwatch cue{label}", file=sys.stderr)
+
+    if session is not None:
+        prepare(session, "")
 
     if do_validate:
-        try:
-            schema_validate_session(session, shape=shape, lesson_model=lesson_model)
-        except GenerateError as first_exc:
+        first_exc = parse_error
+        if session is not None and first_exc is None:
+            try:
+                schema_validate_session(session, shape=shape, lesson_model=lesson_model)
+            except GenerateError as exc:
+                first_exc = exc
+        if first_exc is not None:
             print(
                 f"  Validation failed for {session_id}; one repair pass…",
                 file=sys.stderr,
             )
             repair_raw = call_gemini(
                 build_repair_prompt(
-                    session, str(first_exc), shape=shape, lesson_model=lesson_model
+                    session,
+                    str(first_exc),
+                    shape=shape,
+                    lesson_model=lesson_model,
+                    source_text=None if session is not None else raw,
                 ),
                 model_name,
             )
-            session = parse_session_response(repair_raw)
-            pin_session_identity(session, session_id, compiled_ref)
-            pin_ovw_map(session, compiled_ref)
-            title_fixes = scrub_student_title_jargon(session)
-            if title_fixes:
-                print(
-                    "  Scrubbed student_title jargon after repair:\n    "
-                    + "\n    ".join(title_fixes),
-                    file=sys.stderr,
-                )
-            if ensure_ref_timing(session, compiled_ref):
-                print("  Added REF stopwatch cue after repair", file=sys.stderr)
+            try:
+                session = parse_session_response(repair_raw)
+            except GenerateError as repair_parse_exc:
+                raise GenerateError(
+                    f"Session still invalid after one repair retry:\n{repair_parse_exc}"
+                ) from repair_parse_exc
+            prepare(session, " after repair")
             try:
                 schema_validate_session(session, shape=shape, lesson_model=lesson_model)
                 print(f"  Repair PASS for {session_id}", file=sys.stderr)
@@ -373,6 +400,11 @@ def generate_one(
                 raise GenerateError(
                     f"Session still invalid after one repair retry:\n{second_exc}"
                 ) from second_exc
+    elif parse_error is not None:
+        raise parse_error
+
+    if session is None:
+        raise GenerateError(f"No session produced for {session_id}")
 
     save_json(destination, session)
     return destination

@@ -14,4 +14,4 @@ Establish expectations and map the session. Keep energy high and timing visible.
 
 **Timer doctrine**
 
-Keep the stopwatch visible for each student speaking turn. Reflection turns are 90–120 seconds per participant.
+Keep the stopwatch visible for each student speaking turn. Reflection turns are {{REFLECTION_MIN}}–{{REFLECTION_MAX}} seconds per participant.

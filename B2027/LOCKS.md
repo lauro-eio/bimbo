@@ -177,7 +177,7 @@ SK-PROD remapped to Club stages. Learning text lives in materials, not only in `
 | `Q3` | Role-play brief (roles, situation, outcome) or debate questions in `student_content` — **no fake MCQs** |
 | `FP` | Role-play debrief questions, or the remaining opinion questions |
 | `FBDC` | Host upgrades in `teacher_notes` (anonymous delayed correction + expressive paraphrases) |
-| `REF` | Timing cues (90–120s) in `teacher_notes`; learner prompt in `student_content` |
+| `REF` | Timing cues for this level's reflection range in `teacher_notes`; the learner prompt states that same range |
 
 ---
 
@@ -202,7 +202,7 @@ Do not treat a session as shippable without a green Club validate. Minimum gates
 - TL count **3–5** (prefer `column_banks` of usable phrases)
 - Article word count in **120–220**; form = decision vignette; no banned openers
 - Plan sheet ≥ 6. Role-play: `Q3` names roles and outcome; `FP` is a debrief question. Debate: first **3** questions in `Q3`; remainder in `FP`, and `FP` is general opinion
-- `REF` timing cues present (90–120s)
+- `REF` timing cues present for this level's reflection range
 - Audience guardrails honored
 - Materials shape respected (`ART` passage, no fake speaking MCQs)
 - Channel discipline: `OVW` learner = `HOST_ONLY`; no agenda maps / ceremony in learner copy

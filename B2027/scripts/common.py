@@ -123,8 +123,13 @@ def stage_roster_markdown(
 def fill_ovw_template(
     template: str,
     labels: list[tuple[str, str]] | None = None,
+    reflection_min: int = 90,
+    reflection_max: int = 120,
 ) -> str:
-    return template.replace("{{STAGE_ROSTER}}", stage_roster_markdown(labels))
+    text = template.replace("{{STAGE_ROSTER}}", stage_roster_markdown(labels))
+    text = text.replace("{{REFLECTION_MIN}}", str(reflection_min))
+    text = text.replace("{{REFLECTION_MAX}}", str(reflection_max))
+    return text
 
 
 def auto_situational_brief(topic: str) -> str:

@@ -37,7 +37,7 @@ JARGON = re.compile(
     re.I,
 )
 TIMING = re.compile(
-    r"(90|120|1\.5|2(\.0)?)\s*(s|sec|secs|second|seconds|min|mins|minute|minutes)"
+    r"(60|90|120|150|1\.5|2(\.0)?)\s*(s|sec|secs|second|seconds|min|mins|minute|minutes)"
     r"|timed\s+reflection|stopwatch",
     re.I,
 )
@@ -262,7 +262,7 @@ def validate_session_dod(
         notes = str(ref.get("teacher_notes") or "")
         if not TIMING.search(notes):
             messages.append(
-                "  - REF teacher_notes: missing 90–120s / timer timing cues"
+                "  - REF teacher_notes: missing a stopwatch cue for this level's reflection range"
             )
 
     q3 = stage_by_code(session, "Q3")

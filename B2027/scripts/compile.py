@@ -115,7 +115,12 @@ def compile_session(session_id: str, level: str | None = None) -> dict[str, Any]
             "reflection_seconds_min": budgets["reflection_seconds_min"],
             "reflection_seconds_max": budgets["reflection_seconds_max"],
         },
-        "ovw_host_content": fill_ovw_template(ovw_template, ovw_labels),
+        "ovw_host_content": fill_ovw_template(
+            ovw_template,
+            ovw_labels,
+            reflection_min=budgets["reflection_seconds_min"],
+            reflection_max=budgets["reflection_seconds_max"],
+        ),
         "editorial": {
             "show_dont_tell": editorial["show_dont_tell"],
             "art_form": editorial["art_form"],

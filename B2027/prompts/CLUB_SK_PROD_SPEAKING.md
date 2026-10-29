@@ -19,8 +19,8 @@ Write like a **GO2 speaking lesson** (task-forward student channel) with a **Glo
 - Set `session_metadata.unit_title` and `session_metadata.session_title` to the **exact** topic string (upload title).
 - Write at `pipeline_metadata.cefr_level`. Follow `session_context.level_demand`. A B1 session stays simpler than B2. A C1 session stays more precise than B2.
 - Set `session_metadata.cefr_level` to that compiled value.
-- Article body within `budgets.article_word_min`–`article_word_max`.
-- Reflection timing is `budgets.reflection_seconds_min`–`budgets.reflection_seconds_max`, with a stopwatch cue.
+- Article body within `budgets.article_word_min`–`article_word_max`. If the draft is short, lengthen the vignette until it reaches the minimum.
+- Reflection timing is `budgets.reflection_seconds_min`–`budgets.reflection_seconds_max`, with a stopwatch cue. REF `student_content` must state that full range, not one number inside it.
 - TL: **3–5** usable phrases (prefer `column_banks`).
 - Plan sheet ≥ 6 questions.
 - Follow `framework_runtime.lesson_model` (`roleplay` on odd classes, `debate` on even classes).
@@ -44,11 +44,11 @@ Write like a **GO2 speaking lesson** (task-forward student channel) with a **Glo
 | :--- | :--- | :--- |
 | **L-IN** | First test. | Odd / `roleplay`: 2–3 situation questions. Even / `debate`: a topic game; `student_content` must contain the word "game". |
 | **OVW** | Host expectations + map. | Host-only (`HOST_ONLY` learner). `teacher_notes` = `ovw_host_content`. |
-| **ART** | The workplace scene the later task will use. | **decision vignette** in `reading_passage`. `student_content`: one short read-aloud prompt only. |
+| **ART** | The workplace scene the later task will use. | **decision vignette** in `reading_passage.body`, within `budgets.article_word_min`–`article_word_max`. A short body must be lengthened. `student_content`: one short read-aloud prompt only. |
 | **TL** | 3–5 phrases for that task. | `materials.column_banks`. `student_content`: one short “use these phrases” line. |
-| **Q3** | Controlled task. | `roleplay`: name the roles, the situation, and the outcome. Do not paste plan-sheet questions. `debate`: a debate using the first three plan-sheet questions. |
+| **Q3** | Controlled task. | `roleplay`: `student_content` must contain the words "role" and "outcome", and name the situation. Do not paste plan-sheet questions. `debate`: a debate using the first three plan-sheet questions. |
 | **FP** | Freer speaking. | `roleplay`: one or two debrief questions. `debate`: general opinion, and the word "opinion", using the remaining plan-sheet questions. |
-| **REF** | Timed reflection for this level. | Timing in `teacher_notes` from `budgets`; short learner prompt. `student_title`: e.g. “Your takeaways” — **not** “Reflection”. |
+| **REF** | Timed reflection for this level. | Timing in `teacher_notes` from `budgets`. Learner prompt states the full `reflection_seconds_min`–`reflection_seconds_max` range. `student_title`: e.g. “Your takeaways” — **not** “Reflection”. |
 | **FBDC** | Delayed correction + expressive upgrades. | Procedure + sample upgrades in `teacher_notes`; learner can be one short line or `HOST_ONLY`. |
 
 ## ART voice (GL-inspired)
