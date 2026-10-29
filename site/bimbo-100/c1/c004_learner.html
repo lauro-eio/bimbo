@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bimbo · 100 · Learner · c004 — IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</title>
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #ddd;
+      --host: #2c5282;
+      --learner: #276749;
+      --teacher-bg: #f3f6f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+      color: var(--text);
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+      background: #fff;
+    }
+    body.view-host { border-top: 4px solid var(--host); }
+    body.view-learner { border-top: 4px solid var(--learner); }
+    h1 { font-size: 1.45rem; margin: 0 0 0.35rem; }
+    h2 { font-size: 1.1rem; margin: 0; }
+    h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin: 0 0 0.5rem;
+    }
+    h4 { font-size: 0.95rem; margin: 0.75rem 0 0.35rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+    .plan-sheet {
+      border: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      margin: 0 0 1.5rem;
+      background: #fafafa;
+    }
+    .plan-sheet ol { margin: 0.35rem 0 0; padding-left: 1.25rem; }
+    .stage {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 0;
+      margin: 0;
+    }
+    .stage-header {
+      display: flex;
+      gap: 0.65rem;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+    .stage-code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: var(--host);
+      background: var(--teacher-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    body.view-learner .stage-code { display: none; }
+    .teacher {
+      background: var(--teacher-bg);
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 0.85rem;
+      border-radius: 4px;
+    }
+    .handout-title { margin-top: 0; }
+    .passage {
+      border-left: 3px solid var(--border);
+      padding-left: 0.85rem;
+      margin: 0.75rem 0;
+    }
+    ul { margin: 0.35rem 0 0.75rem; padding-left: 1.25rem; }
+    p { margin: 0 0 0.65rem; }
+    a { color: var(--host); }
+    .site-nav { font-family: system-ui, sans-serif; font-size: 0.85rem; margin: 0 0 1rem; }
+    .site-nav a { margin-right: 0.85rem; }
+  </style>
+</head>
+<body class="view-learner">
+<nav class="site-nav"><a href="../index.html">Bimbo · 100</a><a href="c004_host.html">Host</a></nav>
+
+<h1>c004 — IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</h1>
+<p class="meta">Bimbo · 100 · learner · IoT Sensors for Predictive Maintenance: Installing line sensors to detect oven and conveyor belt failures before outages occur.</p>
+<section class="plan-sheet"><h3>Plan sheet</h3><ol><li>To what extent should operational teams rely on automated sensor alerts over manual technician inspections?</li><li>How do you balance the upfront capital expenditure of retrofitting legacy machinery with the projected long-term savings?</li><li>What are the organizational risks when false positives from IoT sensors repeatedly halt production lines?</li><li>How should plant managers handle pushback from veteran floor supervisors who distrust algorithmic maintenance schedules?</li><li>Where is the precise threshold between over-maintaining equipment and running components until failure?</li><li>How does shifting from reactive repairs to predictive maintenance alter the core responsibilities of shift engineers?</li></ol></section>
+<article class="stage" id="stage-L-IN">
+<header class="stage-header"><h2>Opening stance game</h2></header>
+<section class="handout">
+<p>Play the quick stance game with your partner: one person defends pure automated sensor triggers, while the other defends traditional scheduled manual inspections. Switch roles after one minute.</p>
+</section>
+</article>
+<article class="stage" id="stage-ART">
+<header class="stage-header"><h2>Shared scenario</h2></header>
+<section class="handout">
+<p>Read the short operational case below before we open the floor discussion.</p>
+<div class="passage">
+<h4>The Thermal Drift on Line Four</h4>
+<p class="meta">passage_id: art_passage_01</p>
+<p>Plant Director Marcus stood on the mezzanine overlooking the packaging floor, watching the main conveyor belt shudder slightly as it cleared the high-heat curing oven. Telemetry feeds from the newly installed vibration and thermal sensors were flashing amber. The algorithms predicted a catastrophic bearing seizure within forty-eight hours if the drive motor continued under current thermal stress. However, halting the line now meant missing a major regional delivery window, triggering heavy retail penalties.</p>
+<p>Production Lead Elena argued that the sensors were overly cautious, pointing out that historical acoustic checks had never flagged this specific gearbox before. &#x27;We are looking at ghost anomalies,&#x27; she insisted, gesturing to the steady output numbers on the main dashboard. &#x27;Shutting down now costs us twenty thousand dollars in immediate throughput.&#x27; Marcus weighed the blinking amber metrics against the veteran supervisor&#x27;s confidence. The cost of an unplanned multi-day outage dwarfed the immediate delivery penalty, yet overriding the floor team risked eroding trust in the new automation initiative. He reached for the radio to call emergency maintenance.</p>
+</div>
+</section>
+</article>
+<article class="stage" id="stage-TL">
+<header class="stage-header"><h2>Useful phrases</h2></header>
+<section class="handout">
+<p>Incorporate these professional structures into your upcoming debate and discussion turns.</p>
+<div class="column-banks">
+<h4>Assessing Risk &amp; Telemetry</h4><ul><li>flag a latent anomaly</li><li>weigh telemetry against intuition</li><li>mitigate catastrophic downtime</li></ul>
+<h4>Managing Operational Friction</h4><ul><li>override floor pushback</li><li>balance throughput against maintenance</li><li>validate algorithmic predictions</li></ul>
+</div>
+</section>
+</article>
+<article class="stage" id="stage-Q3">
+<header class="stage-header"><h2>First three questions</h2></header>
+<section class="handout">
+<p>Take a side and debate these three core questions with your group:</p>
+<ul><li>To what extent should operational teams rely on automated sensor alerts over manual technician inspections?</li><li>How do you balance the upfront capital expenditure of retrofitting legacy machinery with the projected long-term savings?</li><li>What are the organizational risks when false positives from IoT sensors repeatedly halt production lines?</li></ul>
+</section>
+</article>
+<article class="stage" id="stage-FP">
+<header class="stage-header"><h2>Open discussion</h2></header>
+<section class="handout">
+<p>Share your opinion on the remaining three complex scenarios:</p>
+<ul><li>How should plant managers handle pushback from veteran floor supervisors who distrust algorithmic maintenance schedules?</li><li>Where is the precise threshold between over-maintaining equipment and running components until failure?</li><li>How does shifting from reactive repairs to predictive maintenance alter the core responsibilities of shift engineers?</li></ul>
+</section>
+</article>
+<article class="stage" id="stage-REF">
+<header class="stage-header"><h2>Your takeaways</h2></header>
+<section class="handout">
+<p>Speak solo for 90 to 150 seconds. Summarize your definitive stance on balancing automated sensor data with human expertise on the industrial floor.</p>
+</section>
+</article>
+<article class="stage" id="stage-FBDC">
+<header class="stage-header"><h2>Stronger wording</h2></header>
+<section class="handout">
+<p>Review your host&#x27;s linguistic upgrades and note down stronger alternatives for discussing operational risk and automation.</p>
+</section>
+</article>
+</body>
+</html>
